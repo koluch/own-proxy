@@ -5,17 +5,12 @@
   "version": "1.0",
 
   "icons": {
-    "48": "icons/block.svg",
-    "96": "icons/block.svg"
+    "48": "icons/proxy-off-icon.svg"
   },
 
   "browser_action": {
-    "default_icon": {
-      "19": "icons/block.svg",
-      "38": "icons/block.svg"
-    },
-    "default_title": "Whereami?",
-    "default_popup": "popups/main_popup.html"
+    "default_icon": "icons/proxy-off-icon.svg",
+    "default_title": "Whereami?"
   },
 
   "applications": {
@@ -25,9 +20,7 @@
   },
 
   "background": {
-    "scripts": [
-      "background/proxy-handler.js"
-    ]
+    "scripts": ["background/proxy-handler.js"]
   },
 
   "options_ui": {
@@ -36,5 +29,4 @@
   },
 
   "permissions": ["proxy", "storage", "<all_urls>"]
-
 }

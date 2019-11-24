@@ -1,48 +1,72 @@
 // Initialize the list of blocked hosts
-let blockedHosts = ["example.com", "example.org"];
+// let blockedHosts = ["example.com", "example.org"];
+
+const keys = ["host", "port", "user", "password"];
+
+let isEnabled = false;
+let settings = keys.reduce((acc, x) => ({...acc, [x]: ''}), {});
+
+const ICONS = {
+  true: "icons/proxy-on-icon.svg",
+  false: "icons/proxy-off-icon.svg"
+};
+
+function readState() {
+  return browser.storage.local.get(data => {
+    isEnabled = data.isEnabled || false;
+    for (const key of keys) {
+      settings[key] = data[key] || '';
+    }
+  });
+}
+
+function render() {
+  browser.browserAction.setIcon({ path: ICONS[isEnabled] });
+}
+
+browser.browserAction.onClicked.addListener(() => {
+  let newValue = !isEnabled;
+  browser.storage.local.set({
+    isEnabled: newValue
+  });
+});
 
 // Set the default list on installation.
 browser.runtime.onInstalled.addListener(details => {
   browser.storage.local.set({
-    blockedHosts: blockedHosts
+    isEnabled: false
   });
 });
 
-// Get the stored list
-browser.storage.local.get(data => {
-  if (data.blockedHosts) {
-    blockedHosts = data.blockedHosts;
-  }
-});
+readState();
+render();
 
 // Listen for changes in the blocked list
 browser.storage.onChanged.addListener(changeData => {
-  blockedHosts = changeData.blockedHosts.newValue;
+  isEnabled = changeData.isEnabled.newValue;
+  render();
 });
 
-// Managed the proxy
-
 // Listen for a request to open a webpage
-browser.proxy.onRequest.addListener(handleProxyRequest, {urls: ["<all_urls>"]});
+browser.proxy.onRequest.addListener(handleProxyRequest, {
+  urls: ["<all_urls>"]
+});
 
 // On the request to open a webpage
 function handleProxyRequest(requestInfo) {
-// Read the web address of the page to be visited 
-  const url = new URL(requestInfo.url);
-// Determine whether the domain in the web address is on the blocked hosts list
-  if (blockedHosts.indexOf(url.hostname) != -1) {
-// Write details of the proxied host to the console and return the proxy address
-    console.log(`Proxying: ${url.hostname}`);
-    return {type: "http", host: "127.0.0.1", port: 65535};
+  if (isEnabled) {
+    return {
+      type: "socks",
+      host: settings['host'],
+      port: settings['port'],
+      username: settings['username'],
+      password: settings['password'],
+    };
   }
-// Return instructions to open the requested webpage
-  return {type: "direct"};
+  return { type: "direct" };
 }
 
 // Log any errors from the proxy script
 browser.proxy.onError.addListener(error => {
   console.error(`Proxy error: ${error.message}`);
 });
-
-
-
