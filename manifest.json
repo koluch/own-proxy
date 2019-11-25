@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
   "name": "Own-proxy",
-  "description": "Simple extension to support proxy connecting vie authorizes SOCKS5",
-  "version": "1.0",
+  "description": "Simple extension to support proxy connecting vie authorized SOCKS5",
+  "version": "0.1.0",
 
   "icons": {
     "48": "icons/proxy-off-icon.svg"
@@ -11,12 +11,6 @@
   "browser_action": {
     "default_icon": "icons/proxy-off-icon.svg",
     "default_title": "Turn proxy on"
-  },
-
-  "applications": {
-    "gecko": {
-      "strict_min_version": "56.0a1"
-    }
   },
 
   "background": {
