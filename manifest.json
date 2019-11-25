@@ -10,7 +10,7 @@
 
   "browser_action": {
     "default_icon": "icons/proxy-off-icon.svg",
-    "default_title": "Whereami?"
+    "default_title": "Turn proxy on"
   },
 
   "applications": {
@@ -20,7 +20,12 @@
   },
 
   "background": {
-    "scripts": ["background/proxy-handler.js"]
+    "scripts": [
+      "common/init.js",
+      "common/settings.js",
+      "common/isEnabled.js",
+      "background/proxy-handler.js"
+    ]
   },
 
   "options_ui": {

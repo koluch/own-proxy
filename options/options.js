@@ -1,5 +1,5 @@
 // const blockedHostsTextArea = document.querySelector("#blocked-hosts");
-const inputs = document.querySelector(".param");
+const inputs = [...document.querySelectorAll(".param")];
 
 // Store the currently selected settings using browser.storage.local.
 function storeSettings() {
@@ -26,4 +26,6 @@ function onError(e) {
 browser.storage.local.get().then(updateUI, onError);
 
 // Whenever the contents of the textarea changes, save the new values
-blockedHostsTextArea.addEventListener("change", storeSettings);
+for (const input of inputs) {
+  input.addEventListener("change", storeSettings);
+}
