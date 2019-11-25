@@ -25,7 +25,6 @@ function onError(e) {
 // On opening the options page, fetch stored settings and update the UI with them.
 browser.storage.local.get().then(updateUI, onError);
 
-// Whenever the contents of the textarea changes, save the new values
-for (const input of inputs) {
-  input.addEventListener("change", storeSettings);
-}
+document.getElementById('save-button').addEventListener('click', () => {
+  storeSettings();
+});
