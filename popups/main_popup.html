@@ -7,35 +7,50 @@
   </head>
 
   <body>
-    <section class="body">
-      <h1 id="current_state">Loading...</h1>
-      <div class="buttons">
-        <label class="browser-style"
-          ><input
+    <section id="top" class="top">
+      <div id="current_state">Loading...</div>
+    </section>
+    <section class="bottom">
+      <ul class="optionsList">
+        <li class="option">
+          <input
+            id="domain_proxy_default"
             class="browser-style domain_setting"
             name="domain_setting"
             value="default"
             type="radio"
             checked
-          />Default</label
-        >
-        <label class="browser-style"
-          ><input
+          />
+          <label class="browser-style" for="domain_proxy_default"
+            >Default</label
+          >
+        </li>
+        <li class="option">
+          <input
+            id="domain_proxy_never"
             class="browser-style domain_setting"
             name="domain_setting"
             value="never"
             type="radio"
-          />Never proxy this site</label
-        >
-        <label class="browser-style"
-          ><input
+          />
+          <label class="browser-style" for="domain_proxy_never"
+            >Never</label
+          >
+        </li>
+
+        <li class="option">
+          <input
+            id="domain_proxy_always"
             class="browser-style domain_setting"
             name="domain_setting"
             value="always"
             type="radio"
-          />Always proxy this site</label
-        >
-      </div>
+          />
+          <label class="browser-style" for="domain_proxy_always"
+            >Always</label
+          >
+        </li>
+      </ul>
     </section>
 
     <script type="module" src="main_popup.js"></script>

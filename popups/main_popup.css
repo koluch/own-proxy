@@ -1,8 +1,29 @@
-.body {
+body {
+  min-width: 300px;
+  max-width: 400px;
+}
+
+.top {
+  border-bottom: 1px solid #d9d9d9;
+  background: #eee;
+}
+
+.top.isEnabled {
+  border-bottom-color: #e1ffc3;
+  background: #e1ffc3;
+  color: #006903;
+}
+
+.top,
+.bottom {
   padding: 1rem;
 }
 
-.buttons {
-  display: flex;
-  flex-direction: column;
+.optionsList {
+  list-style-type: none;
+  padding: 0;
+}
+
+.option:not(:first-child) {
+  margin-top: 1rem;
 }

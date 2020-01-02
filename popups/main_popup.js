@@ -28,6 +28,7 @@ function render() {
     $("#current_state").innerText = `${domain}: ${
       isEnabled ? "Enabled" : "Disabled"
     }`;
+    $("#top").classList.toggle("isEnabled", isEnabled);
 
     const domainSettings = getDomainSetting(domain);
     for (const [proxyValue, input] of Object.entries(radioButtons)) {
