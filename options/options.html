@@ -2,29 +2,48 @@
 
 <html>
   <head>
-    <meta charset="utf-8">
-    <link rel="stylesheet" href="options.css"/>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="options.css" />
   </head>
 
   <body>
     <section class="settings browser-style">
       <label for="host" class="title">Host:</label>
-      <input  class="param" id="host" name="host" type="text"/>
+      <input class="param" id="host" name="host" type="text" />
 
       <label for="port" class="title">Port:</label>
-      <input  class="param" id="port" name="port" type="text"/>
+      <input class="param" id="port" name="port" type="text" />
 
       <label for="user" class="title">User:</label>
-      <input  class="param" id="user" name="user" type="text"/>
+      <input class="param" id="user" name="user" type="text" />
 
       <label for="password" class="title">Password:</label>
-      <input  class="param" id="password" name="password" type="text"/>
+      <input class="param" id="password" name="password" type="text" />
+
+      <label for="password" class="title">On by default:</label>
+      <input
+        class="param"
+        id="onByDefault"
+        name="onByDefault"
+        type="checkbox"
+      />
+
+      <!--      <label for="domainSpecificSettings" class="title">Site specific settings</label>-->
+      <!--      <textarea id="domainSpecificSettings" rows="10" name="domainSpecificSettings"></textarea>-->
+
       <div class="buttons">
-        <button class="browser-style" type="button" id="save-button">Save</button>
+        <button class="browser-style" type="button" id="reset-button">
+          Reset domain-specific settings
+        </button>
+      </div>
+
+      <div class="buttons">
+        <button class="browser-style" type="button" id="save-button">
+          Save
+        </button>
       </div>
     </section>
 
-    <script src="options.js"></script>
+    <script type="module" src="options.js"></script>
   </body>
-
 </html>

@@ -1,17 +1,43 @@
 <!DOCTYPE html>
 
 <html>
-<head>
-    <meta charset="utf-8">
-    <link rel="stylesheet" href="options.css"/>
-</head>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="main_popup.css" />
+  </head>
 
-<body>
+  <body>
+    <section class="body">
+      <h1 id="current_state">Loading...</h1>
+      <div class="buttons">
+        <label class="browser-style"
+          ><input
+            class="browser-style domain_setting"
+            name="domain_setting"
+            value="default"
+            type="radio"
+            checked
+          />Default</label
+        >
+        <label class="browser-style"
+          ><input
+            class="browser-style domain_setting"
+            name="domain_setting"
+            value="never"
+            type="radio"
+          />Never proxy this site</label
+        >
+        <label class="browser-style"
+          ><input
+            class="browser-style domain_setting"
+            name="domain_setting"
+            value="always"
+            type="radio"
+          />Always proxy this site</label
+        >
+      </div>
+    </section>
 
-<section>
-    <p>Popup</p>
-</section>
-
-</body>
-
+    <script type="module" src="main_popup.js"></script>
+  </body>
 </html>

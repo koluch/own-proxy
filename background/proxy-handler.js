@@ -1,45 +1,43 @@
 // Initialize the list of blocked hosts
-// let blockedHosts = ["example.com", "example.org"];
 
-let isEnabled = false;
-let settings = {};
+import state from "../common/state.js";
+import settings, { HOST, PASSWORD, PORT, USER } from "../common/settings.js";
+import { isProxyEnabledForDomain } from "../common/helpers.js";
+import { getDomain } from "../common/browser.js";
 
 const ICONS = {
-  true: "icons/proxy-on-icon.svg",
-  false: "icons/proxy-off-icon.svg"
+  true: "../icons/proxy-on-icon.svg",
+  false: "../icons/proxy-off-icon.svg"
 };
 
-function render() {
-  browser.browserAction.setIcon({ path: ICONS[isEnabled] });
-  browser.browserAction.setTitle({
-    title: isEnabled ? "Turn proxy off" : "Turn proxy on"
+function handleChanges() {
+  getDomain().then(domain => {
+    const isProxyEnabled = isProxyEnabledForDomain(domain);
+
+    browser.browserAction.setIcon({ path: ICONS[isProxyEnabled] });
+    browser.browserAction.setTitle({
+      title: isProxyEnabled ? "Turn proxy off" : "Turn proxy on"
+    });
   });
 }
-render();
 
-window.modules.settings.onChange(newSettings => {
-  settings = newSettings;
-  render();
-});
+browser.runtime.onInstalled.addListener(handleChanges);
 
-window.modules.isEnabled.onChange(newIsEnabled => {
-  isEnabled = newIsEnabled;
-  render();
-});
-
-browser.browserAction.onClicked.addListener(() => {
-  window.modules.isEnabled.toggle();
-});
+state.listen(handleChanges);
+settings.listen(handleChanges);
+browser.tabs.onActivated.addListener(handleChanges);
 
 browser.proxy.onRequest.addListener(
   requestInfo => {
-    if (isEnabled) {
+    const domain = new URL(requestInfo.url).host;
+    if (isProxyEnabledForDomain(domain)) {
+      const currentSettings = settings.getState();
       return {
         type: "socks",
-        host: settings[SETTINGS_KEY_HOST],
-        port: settings[SETTINGS_KEY_PORT],
-        username: settings[SETTINGS_KEY_USER],
-        password: settings[SETTINGS_KEY_PASSWORD]
+        host: currentSettings[HOST],
+        port: currentSettings[PORT],
+        username: currentSettings[USER],
+        password: currentSettings[PASSWORD]
       };
     }
     return { type: "direct" };
