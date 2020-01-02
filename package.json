@@ -4,7 +4,10 @@
   "description": "Simple extension to support proxy connecting vie authorizes SOCKS5",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "clean": "rm -rf ./build && rm -rf ./*.zip",
+    "build:copy": "mkdir -p build && cp -R manifest.json LICENSE src build",
+    "build:pack": "VERSION=`node -p -e \"require('./package.json').version\"` && cd build && zip -r ../own-proxy-${VERSION}.zip ./*",
+    "build": "npm run clean && npm run build:copy && npm run build:pack"
   },
   "repository": {
     "type": "git",

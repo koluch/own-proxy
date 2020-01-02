@@ -1,6 +1,7 @@
 import state from "../common/state.js";
 import settings, {
   getDomainSetting,
+  ON_BY_DEFAULT,
   setDomainSettings
 } from "../common/settings.js";
 import * as selectors from "../common/helpers.js";
@@ -25,7 +26,11 @@ for (const [proxyValue, input] of Object.entries(radioButtons)) {
 function render() {
   getDomain().then(domain => {
     const isEnabled = selectors.isProxyEnabledForDomain(domain);
+    const currentSettings = settings.getState();
     $("#current_domain").innerText = domain;
+    $("#default_behaviour").innerText = currentSettings[ON_BY_DEFAULT]
+      ? "use proxy"
+      : `don't use proxy`;
     $("#current_state > span").innerText = isEnabled ? "used" : `not used`;
     $("#top").classList.toggle("isEnabled", isEnabled);
 
