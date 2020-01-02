@@ -5,12 +5,11 @@
   "version": "0.1.0",
 
   "icons": {
-    "48": "icons/proxy-off-icon.svg"
+    "48": "icons/proxy-off-icon-light.svg"
   },
 
   "browser_action": {
     "browser_style": true,
-    "default_icon": "icons/proxy-off-icon.svg",
     "default_title": "Proxy",
     "default_popup": "popups/main_popup.html"
   },
@@ -24,5 +23,5 @@
     "browser_style": true
   },
 
-  "permissions": ["proxy", "storage", "tabs", "<all_urls>"]
+  "permissions": ["proxy", "storage", "tabs", "theme","<all_urls>"]
 }

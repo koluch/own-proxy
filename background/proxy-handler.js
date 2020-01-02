@@ -6,17 +6,26 @@ import { isProxyEnabledForDomain } from "../common/helpers.js";
 import { getDomain } from "../common/browser.js";
 
 const ICONS = {
-  true: "../icons/proxy-on-icon.svg",
-  false: "../icons/proxy-off-icon.svg"
+  light: {
+    true: "../icons/proxy-on-icon.svg",
+    false: "../icons/proxy-off-icon-light.svg"
+  },
+  dark: {
+    true: "../icons/proxy-on-icon.svg",
+    false: "../icons/proxy-off-icon-dark.svg"
+  }
 };
 
 function handleChanges() {
+  const theme = window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light";
   getDomain().then(domain => {
     const isProxyEnabled = isProxyEnabledForDomain(domain);
 
-    browser.browserAction.setIcon({ path: ICONS[isProxyEnabled] });
+    browser.browserAction.setIcon({ path: ICONS[theme][isProxyEnabled] });
     browser.browserAction.setTitle({
-      title: isProxyEnabled ? "Turn proxy off" : "Turn proxy on"
+      title: isProxyEnabled ? "Proxy is used" : "Proxy is not used"
     });
   });
 }

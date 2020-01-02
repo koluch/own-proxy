@@ -8,7 +8,8 @@
 
   <body>
     <section id="top" class="top">
-      <div id="current_state">Loading...</div>
+      <div id="current_domain">Loading...</div>
+      <div id="current_state">Proxy is <span>not used</span> for this site</div>
     </section>
     <section class="bottom">
       <ul class="optionsList">
@@ -22,7 +23,7 @@
             checked
           />
           <label class="browser-style" for="domain_proxy_default"
-            >Default</label
+            >Default behaviour (<span></span>)</label
           >
         </li>
         <li class="option">
@@ -34,7 +35,7 @@
             type="radio"
           />
           <label class="browser-style" for="domain_proxy_never"
-            >Never</label
+            >Never proxy this site</label
           >
         </li>
 
@@ -47,7 +48,7 @@
             type="radio"
           />
           <label class="browser-style" for="domain_proxy_always"
-            >Always</label
+            >Always proxy this site</label
           >
         </li>
       </ul>

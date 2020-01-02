@@ -3,20 +3,43 @@ body {
   max-width: 400px;
 }
 
-.top {
-  border-bottom: 1px solid #d9d9d9;
-  background: #eee;
-}
-
-.top.isEnabled {
-  border-bottom-color: #e1ffc3;
-  background: #e1ffc3;
-  color: #006903;
-}
 
 .top,
 .bottom {
   padding: 1rem;
+}
+
+.top {
+  background: linear-gradient(to bottom, #cfcfcf, rgba(0, 0, 0, 0));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+.top.isEnabled {
+  background: linear-gradient(to bottom, #c2ffbd, rgba(213, 255, 204, 0));
+  color: #000000;
+}
+
+#current_domain {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+#current_state {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+}
+#current_state > span {
+  font-weight: bold;
+}
+
+.bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .optionsList {
