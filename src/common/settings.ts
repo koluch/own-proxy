@@ -1,24 +1,23 @@
 import { createStore } from "./store.js";
 import { DictOpt } from "./helpers";
 
-export type DomainName = string
+export type DomainName = string;
 
 export type DomainSettings = {
-  useProxy: 'DEFAULT' | 'ALWAYS' | 'NEVER'
-}
-
-const DEFAULT_DOMAIN_SETTINGS: DomainSettings = {
-  useProxy: 'DEFAULT'
+  useProxy: "DEFAULT" | "ALWAYS" | "NEVER";
 };
 
+const DEFAULT_DOMAIN_SETTINGS: DomainSettings = {
+  useProxy: "DEFAULT",
+};
 
 export interface Settings {
-  host: string
-  port: number
-  user: string
-  password: string
-  onByDefault: boolean
-  domainSpecificSettings: DictOpt<DomainName, DomainSettings>
+  host: string;
+  port: number;
+  user: string;
+  password: string;
+  onByDefault: boolean;
+  domainSpecificSettings: DictOpt<DomainName, DomainSettings>;
 }
 
 const store = createStore<Settings>("SETTINGS", {
@@ -27,7 +26,7 @@ const store = createStore<Settings>("SETTINGS", {
   user: "",
   password: "",
   onByDefault: false,
-  domainSpecificSettings: {}
+  domainSpecificSettings: {},
 });
 
 export function setDomainSettings(domain: string, newSettings: any) {
@@ -39,7 +38,7 @@ export function setDomainSettings(domain: string, newSettings: any) {
     domainSpecificSettings: {
       ...domainSettings,
       ...newSettings,
-    }
+    },
   });
 }
 

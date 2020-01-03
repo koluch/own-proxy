@@ -1,7 +1,7 @@
 import settings, { getDomainSetting } from "./settings.js";
 
-export type Dict<K extends string, V> = {[key in K]: V}
-export type DictOpt<K extends string, V> = Dict<K, V | undefined>
+export type Dict<K extends string, T> = { [P in K]: T };
+export type DictOpt<K extends string, T> = { [P in K]?: T };
 
 export function isProxyEnabledForDomain(domain: string): boolean {
   const currentSettings = settings.getState();

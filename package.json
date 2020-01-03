@@ -9,8 +9,11 @@
     "build:copy": "mkdir -p build && cp -R manifest.json LICENSE build && find src -type f -not -name *.ts -exec rsync -R {} build ';'",
     "build:pack": "VERSION=`node -p -e \"require('./package.json').version\"` && cd build && zip -r ../own-proxy-${VERSION}.zip ./*",
     "build": "npm run clean && npm run build:ts && npm run build:copy && npm run build:pack",
+    "test:lint": "npx eslint --ext ts,tsx ./src",
     "test:types": "npx tsc --noEmit",
-    "test": "npm run test:types"
+    "test": "npm run test:types",
+    "fix:lint": "npx eslint --fix --ext ts,tsx ./src",
+    "fix:prettier": "npx prettier --write ./src/**/*.{ts,tsx}\n"
   },
   "repository": {
     "type": "git",
@@ -24,7 +27,10 @@
   "homepage": "https://github.com/koluch/own-proxy#readme",
   "dependencies": {},
   "devDependencies": {
-    "eslint": "^6.7.1",
+    "@typescript-eslint/eslint-plugin": "^2.14.0",
+    "@typescript-eslint/parser": "^2.14.0",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.9.0",
     "husky": "^3.1.0",
     "lint-staged": "^9.4.3",
     "prettier": "^1.19.1",
@@ -38,7 +44,7 @@
     ]
   },
   "prettier": {
-    "trailing-comma": "all"
+    "trailingComma": "all"
   },
   "husky": {
     "hooks": {

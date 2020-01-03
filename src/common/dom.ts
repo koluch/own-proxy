@@ -1,4 +1,5 @@
-export function $(selector: string): any { //todo: fix
+export function $(selector: string): any {
+  //todo: fix
   const result = document.querySelector(selector);
   if (result == null) {
     throw new Error(`Unable to find element by selector: "${selector}"`);

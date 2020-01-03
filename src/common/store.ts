@@ -17,7 +17,7 @@ export function createStore<T>(storageKey: string, initial: T) {
 
   browser.runtime.onInstalled.addListener(details => {
     browser.storage.local.set({
-      [storageKey]: initial as any // todo: fix
+      [storageKey]: initial as any, // todo: fix
     });
   });
 
@@ -32,7 +32,7 @@ export function createStore<T>(storageKey: string, initial: T) {
     update: (newState: T) => {
       return browser.storage.local
         .set({
-          [storageKey]: newState as any // todo: fix
+          [storageKey]: newState as any, // todo: fix
         })
         .then(() => {
           state = newState;
@@ -42,6 +42,6 @@ export function createStore<T>(storageKey: string, initial: T) {
     getState: () => state,
     listen: (listener: Listener<T>) => {
       listeners.push(listener);
-    }
+    },
   };
 }

@@ -9,7 +9,7 @@ export function getDomain(): Promise<string | null> {
             return new URL(tab.url).host;
           } catch (e) {
             console.warn(
-              `Unable to parse domain from current tab: ${e.message}`
+              `Unable to parse domain from current tab: ${e.message}`,
             );
           }
         }

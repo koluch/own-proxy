@@ -3,19 +3,19 @@ import settings from "../common/settings.js";
 import { $ } from "../common/dom.js";
 
 function storeSettings() {
-  let currentSettings = settings.getState();
+  const currentSettings = settings.getState();
   settings.update({
     ...currentSettings,
     host: $("#host").value,
     port: parseInt($("#port").value) || 0,
     user: $("#user").value,
     password: $("#password").value,
-    onByDefault: $("#onByDefault").checked
+    onByDefault: $("#onByDefault").checked,
   });
 }
 
 function resetDomainSpecificSettings() {
-  let currentSettings = settings.getState();
+  const currentSettings = settings.getState();
   settings.update({
     ...currentSettings,
     domainSpecificSettings: {},
@@ -23,7 +23,7 @@ function resetDomainSpecificSettings() {
 }
 
 function renderOptions() {
-  let currentSettings = settings.getState();
+  const currentSettings = settings.getState();
   $("#host").value = currentSettings.host;
   $("#port").value = currentSettings.port;
   $("#user").value = currentSettings.user;

@@ -8,12 +8,12 @@ import { getDomain, getTheme, Theme } from "../common/browser.js";
 const ICONS: Dict<Theme, DictOpt<string, string>> = {
   LIGHT: {
     true: "../icons/proxy-on-icon.svg",
-    false: "../icons/proxy-off-icon-light.svg"
+    false: "../icons/proxy-off-icon-light.svg",
   },
   DARK: {
     true: "../icons/proxy-on-icon.svg",
-    false: "../icons/proxy-off-icon-dark.svg"
-  }
+    false: "../icons/proxy-off-icon-dark.svg",
+  },
 };
 
 function handleChanges() {
@@ -24,7 +24,7 @@ function handleChanges() {
 
     browser.browserAction.setIcon({ path: ICONS[theme][`${isProxyEnabled}`] });
     browser.browserAction.setTitle({
-      title: isProxyEnabled ? "Proxy is used" : "Proxy is not used"
+      title: isProxyEnabled ? "Proxy is used" : "Proxy is not used",
     });
   });
 }
@@ -43,7 +43,8 @@ browser.tabs.onUpdated.addListener((tabId, changeInfo, tabInfo) => {
 // todo: fix
 // @ts-ignore
 browser.proxy.onRequest.addListener(
-  (requestInfo: any) => { // todo fix
+  (requestInfo: any) => {
+    // todo fix
     const domain = new URL(requestInfo.url).host;
     if (isProxyEnabledForDomain(domain)) {
       const currentSettings = settings.getState();
@@ -52,14 +53,14 @@ browser.proxy.onRequest.addListener(
         host: currentSettings.host,
         port: currentSettings.port,
         username: currentSettings.user,
-        password: currentSettings.password
+        password: currentSettings.password,
       };
     }
     return { type: "direct" };
   },
   {
-    urls: ["<all_urls>"]
-  }
+    urls: ["<all_urls>"],
+  },
 );
 
 // Log any errors from the proxy script
