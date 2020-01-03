@@ -21,7 +21,7 @@ function handleChanges() {
     ? "dark"
     : "light";
   getDomain().then(domain => {
-    const isProxyEnabled = domain && isProxyEnabledForDomain(domain);
+    const isProxyEnabled = domain != null && isProxyEnabledForDomain(domain);
 
     browser.browserAction.setIcon({ path: ICONS[theme][isProxyEnabled] });
     browser.browserAction.setTitle({

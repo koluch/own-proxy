@@ -44,7 +44,8 @@ function render() {
   }
 
   getDomain().then(domain => {
-    const isEnabled = domain && selectors.isProxyEnabledForDomain(domain);
+    const isEnabled =
+      domain != null && selectors.isProxyEnabledForDomain(domain);
     $("#current_domain").innerText = domain || "(no domain)";
     $("#default_behaviour").innerText = currentSettings[ON_BY_DEFAULT]
       ? "use proxy"
