@@ -3,7 +3,6 @@ import settings, {
   getDomainSetting,
   HOST,
   ON_BY_DEFAULT,
-  PORT,
   setDomainSettings
 } from "../common/settings.js";
 import * as selectors from "../common/helpers.js";
@@ -31,9 +30,7 @@ function render() {
   // Show or hide warning about missing settings
   const currentSettings = settings.getState();
   const $el = $("#warnings_no_config");
-  console.log("currentSettings", currentSettings);
-  if (currentSettings[HOST] === "" && currentSettings[PORT] === "") {
-    console.log("$el", $el);
+  if (currentSettings[HOST] === "") {
     $el.classList.add("isClickable");
     $el.classList.add("isShown");
     $el.addEventListener("click", () => {

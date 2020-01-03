@@ -14,7 +14,7 @@ function storeSettings() {
   settings.update({
     ...currentSettings,
     [HOST]: $("#host").value,
-    [PORT]: $("#port").value,
+    [PORT]: parseInt($("#port").value) || 0,
     [USER]: $("#user").value,
     [PASSWORD]: $("#password").value,
     [ON_BY_DEFAULT]: $("#onByDefault").checked

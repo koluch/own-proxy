@@ -13,7 +13,7 @@ const DEFAULT_DOMAIN_SETTINGS = {
 
 const store = createStore("SETTINGS", {
   [HOST]: "",
-  [PORT]: "",
+  [PORT]: 0,
   [USER]: "",
   [PASSWORD]: "",
   [ON_BY_DEFAULT]: false,
@@ -21,10 +21,7 @@ const store = createStore("SETTINGS", {
 });
 
 export function setDomainSettings(domain, newSettings) {
-  console.log("domain", domain);
-  console.log("newSettings", newSettings);
   const state = store.getState();
-  console.log("state", state);
   const domainSettingsTable = state[DOMAIN_SPECIFIC_SETTINGS];
   const domainSettings = domainSettingsTable.find(x => x.domain === domain) || {
     ...DEFAULT_DOMAIN_SETTINGS,
