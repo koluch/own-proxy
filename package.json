@@ -8,7 +8,9 @@
     "build:ts": "npx tsc",
     "build:copy": "mkdir -p build && cp -R manifest.json LICENSE build && find src -type f -not -name *.ts -exec rsync -R {} build ';'",
     "build:pack": "VERSION=`node -p -e \"require('./package.json').version\"` && cd build && zip -r ../own-proxy-${VERSION}.zip ./*",
-    "build": "npm run clean && npm run build:ts && npm run build:copy && npm run build:pack"
+    "build": "npm run clean && npm run build:ts && npm run build:copy && npm run build:pack",
+    "test:types": "npx tsc --noEmit",
+    "test": "npm run test:types"
   },
   "repository": {
     "type": "git",
@@ -30,7 +32,7 @@
     "web-ext-types": "^3.2.1"
   },
   "lint-staged": {
-    "*.js": [
+    "*.ts": [
       "prettier --write",
       "git add"
     ]
@@ -40,7 +42,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npx lint-staged"
+      "pre-commit": "npx lint-staged && npm run test:types"
     }
   }
 }
