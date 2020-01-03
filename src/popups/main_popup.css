@@ -1,6 +1,6 @@
 body {
   min-width: 300px;
-  max-width: 400px;
+  max-width: 300px;
 }
 
 
@@ -49,4 +49,22 @@ body {
 
 .option:not(:first-child) {
   margin-top: 1rem;
+}
+
+.warnings {
+  background: orange;
+}
+.warnings > div {
+  padding: 0.5rem 1rem;
+  font-size: 0.8rem;
+  color: white;
+  display: none;
+}
+
+.isClickable {
+  cursor: pointer;
+}
+
+.isShown {
+  display: block !important;
 }
