@@ -1,6 +1,8 @@
-export function createStore(storageKey, initial) {
-  const listeners = [];
-  let state = initial;
+type Listener<T> = (value: T) => void;
+
+export function createStore<T>(storageKey: string, initial: T) {
+  const listeners: Listener<T>[] = [];
+  let state: T = initial;
 
   function callListeners() {
     for (const listener of listeners) {
@@ -9,13 +11,13 @@ export function createStore(storageKey, initial) {
   }
 
   browser.storage.local.get([storageKey]).then(data => {
-    state = data[storageKey];
+    state = ((data[storageKey] || initial) as unknown) as T; // todo: fix
     callListeners();
   });
 
   browser.runtime.onInstalled.addListener(details => {
     browser.storage.local.set({
-      [storageKey]: initial
+      [storageKey]: initial as any // todo: fix
     });
   });
 
@@ -27,10 +29,10 @@ export function createStore(storageKey, initial) {
   });
 
   return {
-    update: newState => {
+    update: (newState: T) => {
       return browser.storage.local
         .set({
-          [storageKey]: newState
+          [storageKey]: newState as any // todo: fix
         })
         .then(() => {
           state = newState;
@@ -38,7 +40,7 @@ export function createStore(storageKey, initial) {
         });
     },
     getState: () => state,
-    listen: listener => {
+    listen: (listener: Listener<T>) => {
       listeners.push(listener);
     }
   };

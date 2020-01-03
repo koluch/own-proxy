@@ -1,23 +1,16 @@
 import "../common/settings.js";
-import settings, {
-  DOMAIN_SPECIFIC_SETTINGS,
-  HOST,
-  ON_BY_DEFAULT,
-  PASSWORD,
-  PORT,
-  USER
-} from "../common/settings.js";
+import settings from "../common/settings.js";
 import { $ } from "../common/dom.js";
 
 function storeSettings() {
   let currentSettings = settings.getState();
   settings.update({
     ...currentSettings,
-    [HOST]: $("#host").value,
-    [PORT]: parseInt($("#port").value) || 0,
-    [USER]: $("#user").value,
-    [PASSWORD]: $("#password").value,
-    [ON_BY_DEFAULT]: $("#onByDefault").checked
+    host: $("#host").value,
+    port: parseInt($("#port").value) || 0,
+    user: $("#user").value,
+    password: $("#password").value,
+    onByDefault: $("#onByDefault").checked
   });
 }
 
@@ -25,22 +18,23 @@ function resetDomainSpecificSettings() {
   let currentSettings = settings.getState();
   settings.update({
     ...currentSettings,
-    [DOMAIN_SPECIFIC_SETTINGS]: []
+    domainSpecificSettings: {},
   });
 }
 
 function renderOptions() {
   let currentSettings = settings.getState();
-  $("#host").value = currentSettings[HOST];
-  $("#port").value = currentSettings[PORT];
-  $("#user").value = currentSettings[USER];
-  $("#password").value = currentSettings[PASSWORD];
-  $("#onByDefault").checked = currentSettings[ON_BY_DEFAULT];
+  $("#host").value = currentSettings.host;
+  $("#port").value = currentSettings.port;
+  $("#user").value = currentSettings.user;
+  $("#password").value = currentSettings.password;
+  $("#onByDefault").checked = currentSettings.onByDefault;
 }
 
 settings.listen(renderOptions);
 
-function onError(e) {
+// todo: fix
+function onError(e: any) {
   console.error(e);
 }
 

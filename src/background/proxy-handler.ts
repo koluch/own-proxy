@@ -1,29 +1,28 @@
 // Initialize the list of blocked hosts
 
 import state from "../common/state.js";
-import settings, { HOST, PASSWORD, PORT, USER } from "../common/settings.js";
-import { isProxyEnabledForDomain } from "../common/helpers.js";
-import { getDomain } from "../common/browser.js";
+import settings from "../common/settings.js";
+import { Dict, DictOpt, isProxyEnabledForDomain } from "../common/helpers.js";
+import { getDomain, getTheme, Theme } from "../common/browser.js";
 
-const ICONS = {
-  light: {
+const ICONS: Dict<Theme, DictOpt<string, string>> = {
+  LIGHT: {
     true: "../icons/proxy-on-icon.svg",
     false: "../icons/proxy-off-icon-light.svg"
   },
-  dark: {
+  DARK: {
     true: "../icons/proxy-on-icon.svg",
     false: "../icons/proxy-off-icon-dark.svg"
   }
 };
 
 function handleChanges() {
-  const theme = window.matchMedia("(prefers-color-scheme: dark)").matches
-    ? "dark"
-    : "light";
+  const theme = getTheme();
   getDomain().then(domain => {
-    const isProxyEnabled = domain != null && isProxyEnabledForDomain(domain);
+    const isProxyEnabled: boolean =
+      domain != null && isProxyEnabledForDomain(domain);
 
-    browser.browserAction.setIcon({ path: ICONS[theme][isProxyEnabled] });
+    browser.browserAction.setIcon({ path: ICONS[theme][`${isProxyEnabled}`] });
     browser.browserAction.setTitle({
       title: isProxyEnabled ? "Proxy is used" : "Proxy is not used"
     });
@@ -41,17 +40,19 @@ browser.tabs.onUpdated.addListener((tabId, changeInfo, tabInfo) => {
   }
 });
 
+// todo: fix
+// @ts-ignore
 browser.proxy.onRequest.addListener(
-  requestInfo => {
+  (requestInfo: any) => { // todo fix
     const domain = new URL(requestInfo.url).host;
     if (isProxyEnabledForDomain(domain)) {
       const currentSettings = settings.getState();
       return {
         type: "socks",
-        host: currentSettings[HOST],
-        port: currentSettings[PORT],
-        username: currentSettings[USER],
-        password: currentSettings[PASSWORD]
+        host: currentSettings.host,
+        port: currentSettings.port,
+        username: currentSettings.user,
+        password: currentSettings.password
       };
     }
     return { type: "direct" };
@@ -62,6 +63,8 @@ browser.proxy.onRequest.addListener(
 );
 
 // Log any errors from the proxy script
+// todo: fix
+// @ts-ignore
 browser.proxy.onError.addListener(error => {
   console.error(`Proxy error: ${error.message}`);
 });

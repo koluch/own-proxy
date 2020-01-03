@@ -1,4 +1,4 @@
-export function getDomain() {
+export function getDomain(): Promise<string | null> {
   return browser.tabs
     .query({ currentWindow: true, active: true })
     .then(tabs => {
@@ -18,4 +18,11 @@ export function getDomain() {
         throw new Error("There are no tabs in current window");
       }
     });
+}
+
+export type Theme = "LIGHT" | "DARK";
+export function getTheme(): Theme {
+  return window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "DARK"
+    : "LIGHT";
 }

@@ -5,9 +5,10 @@
   "main": "index.js",
   "scripts": {
     "clean": "rm -rf ./build && rm -rf ./*.zip",
-    "build:copy": "mkdir -p build && cp -R manifest.json LICENSE src build",
+    "build:ts": "npx tsc",
+    "build:copy": "mkdir -p build && cp -R manifest.json LICENSE build && find src -type f -not -name *.ts -exec rsync -R {} build ';'",
     "build:pack": "VERSION=`node -p -e \"require('./package.json').version\"` && cd build && zip -r ../own-proxy-${VERSION}.zip ./*",
-    "build": "npm run clean && npm run build:copy && npm run build:pack"
+    "build": "npm run clean && npm run build:ts && npm run build:copy && npm run build:pack"
   },
   "repository": {
     "type": "git",
@@ -24,7 +25,9 @@
     "eslint": "^6.7.1",
     "husky": "^3.1.0",
     "lint-staged": "^9.4.3",
-    "prettier": "^1.19.1"
+    "prettier": "^1.19.1",
+    "typescript": "^3.7.4",
+    "web-ext-types": "^3.2.1"
   },
   "lint-staged": {
     "*.js": [
