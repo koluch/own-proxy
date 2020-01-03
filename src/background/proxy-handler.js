@@ -35,6 +35,11 @@ browser.runtime.onInstalled.addListener(handleChanges);
 state.listen(handleChanges);
 settings.listen(handleChanges);
 browser.tabs.onActivated.addListener(handleChanges);
+browser.tabs.onUpdated.addListener((tabId, changeInfo, tabInfo) => {
+  if (tabInfo.active && changeInfo.url) {
+    handleChanges();
+  }
+});
 
 browser.proxy.onRequest.addListener(
   requestInfo => {
