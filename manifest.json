@@ -23,5 +23,5 @@
     "browser_style": true
   },
 
-  "permissions": ["proxy", "storage", "tabs", "<all_urls>"]
+  "permissions": ["proxy", "storage", "<all_urls>"]
 }
