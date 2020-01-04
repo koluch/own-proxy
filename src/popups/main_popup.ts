@@ -68,7 +68,8 @@ async function render(): Promise<void> {
       (domain && currentSettings.domainSpecificSettings[domain]) ||
       DEFAULT_DOMAIN_SETTINGS;
     for (const [proxyValue, input] of Object.entries(radioButtons)) {
-      input.checked = proxyValue === domainSettings.useProxy;
+      input.checked = domain != null && proxyValue === domainSettings.useProxy;
+      input.disabled = domain == null;
     }
   }
 }

@@ -20,7 +20,7 @@ export function isProxyEnabledForDomain(
 
 export function getUrlDomain(url: string): string | null {
   try {
-    return new URL(url).host;
+    return new URL(url).host || null;
   } catch (e) {
     console.warn(`Unable to parse domain from current tab: ${e.message}`);
   }
