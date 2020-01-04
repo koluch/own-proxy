@@ -1,16 +1,17 @@
 import { createStore, Listener } from "./store.js";
 import { DictOpt } from "./helpers";
+import StorageObject = browser.storage.StorageObject;
+import StorageValue = browser.storage.StorageValue;
 
 export type DomainName = string;
 
 export type UseProxyMode = "DEFAULT" | "ALWAYS" | "NEVER";
+
 export type DomainSettings = {
   useProxy: UseProxyMode;
 };
 
-export const DEFAULT_DOMAIN_SETTINGS: DomainSettings = {
-  useProxy: "DEFAULT",
-};
+export type DomainSettingsDict = DictOpt<DomainName, DomainSettings>;
 
 export interface Settings {
   host: string;
@@ -18,17 +19,53 @@ export interface Settings {
   user: string;
   password: string;
   onByDefault: boolean;
-  domainSpecificSettings: DictOpt<DomainName, DomainSettings>;
+  domainSettings: DomainSettingsDict;
 }
 
-const store = createStore<Settings>("SETTINGS", {
+export const DEFAULT_DOMAIN_SETTINGS: DomainSettings = {
+  useProxy: "DEFAULT",
+};
+
+export const DEFAULT_SETTINGS: Settings = {
   host: "",
-  port: 0,
+  port: 1080,
   user: "",
   password: "",
   onByDefault: false,
-  domainSpecificSettings: {},
-});
+  domainSettings: {},
+};
+
+const store = createStore<Settings>(
+  "SETTINGS",
+  DEFAULT_SETTINGS,
+  (settings: Settings): StorageObject => {
+    const result: StorageObject = {};
+    for (const [key, value] of Object.entries(settings)) {
+      result[key] = value;
+    }
+    return result;
+  },
+  (value: StorageValue): Settings => {
+    if (value == null) {
+      return DEFAULT_SETTINGS;
+    }
+    if (typeof value != "object") {
+      throw new Error(`Unable to deserialize settings from non-object value`);
+    }
+    const obj = value as StorageObject;
+    return {
+      ...DEFAULT_SETTINGS,
+      host: (obj["host"] || DEFAULT_SETTINGS.host) as string,
+      port: (obj["port"] || DEFAULT_SETTINGS.port) as number,
+      user: (obj["user"] || DEFAULT_SETTINGS.user) as string,
+      password: (obj["password"] || DEFAULT_SETTINGS.password) as string,
+      onByDefault: (obj["onByDefault"] ||
+        DEFAULT_SETTINGS.onByDefault) as boolean,
+      domainSettings: (obj["domainSettings"] ||
+        DEFAULT_SETTINGS.domainSettings) as DomainSettingsDict,
+    };
+  },
+);
 
 export function getSettings(): Settings {
   return store.getState();

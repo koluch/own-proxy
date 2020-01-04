@@ -1,8 +1,9 @@
 import "../common/settings.js";
 import * as settings from "../common/settings.js";
+import { DEFAULT_SETTINGS } from "../common/settings.js";
 import { $ } from "../common/dom.js";
 
-function storeSettings() {
+function storeSettings(): void {
   settings.setSettings({
     ...settings.getSettings(),
     host: $("#host").value,
@@ -13,14 +14,14 @@ function storeSettings() {
   });
 }
 
-function resetDomainSpecificSettings() {
+function resetDomainSettings(): void {
   settings.setSettings({
     ...settings.getSettings(),
-    domainSpecificSettings: {},
+    domainSettings: DEFAULT_SETTINGS.domainSettings,
   });
 }
 
-function render() {
+function render(): void {
   const currentSettings = settings.getSettings();
   $("#host").value = currentSettings.host;
   $("#port").value = currentSettings.port;
@@ -31,15 +32,10 @@ function render() {
 
 settings.listen(render);
 
-// todo: fix
-function onError(e: any) {
-  console.error(e);
-}
-
 $("#save-button").addEventListener("click", () => {
   storeSettings();
 });
 
 $("#reset-button").addEventListener("click", () => {
-  resetDomainSpecificSettings();
+  resetDomainSettings();
 });

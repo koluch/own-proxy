@@ -19,12 +19,12 @@ for (const [proxyValue, input] of Object.entries(radioButtons)) {
       const domain = getUrlDomain(activeTab.url);
       if (domain != null) {
         const currentSettings = settings.getSettings();
-        const domainSettingsDict = currentSettings.domainSpecificSettings;
+        const domainSettingsDict = currentSettings.domainSettings;
         const domainSettings =
           domainSettingsDict[domain] || DEFAULT_DOMAIN_SETTINGS;
         settings.setSettings({
           ...currentSettings,
-          domainSpecificSettings: {
+          domainSettings: {
             ...domainSettingsDict,
             [domain]: {
               ...domainSettings,
@@ -65,7 +65,7 @@ async function render(): Promise<void> {
     $("#top").classList.toggle("isEnabled", isEnabled);
 
     const domainSettings =
-      (domain && currentSettings.domainSpecificSettings[domain]) ||
+      (domain && currentSettings.domainSettings[domain]) ||
       DEFAULT_DOMAIN_SETTINGS;
     for (const [proxyValue, input] of Object.entries(radioButtons)) {
       input.checked = domain != null && proxyValue === domainSettings.useProxy;

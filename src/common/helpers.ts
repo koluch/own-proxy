@@ -8,7 +8,7 @@ export function isProxyEnabledForDomain(
   domain: string,
 ): boolean {
   const domainSettings =
-    settings.domainSpecificSettings[domain] || DEFAULT_DOMAIN_SETTINGS;
+    settings.domainSettings[domain] || DEFAULT_DOMAIN_SETTINGS;
   if (domainSettings.useProxy === "NEVER") {
     return false;
   }
