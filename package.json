@@ -41,7 +41,8 @@
     "web-ext-types": "^3.2.1"
   },
   "lint-staged": {
-    "*.ts": [
+    "*.ts?(x)": [
+      "eslint --fix",
       "prettier --write",
       "git add"
     ]
