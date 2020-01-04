@@ -47,8 +47,9 @@ browser.tabs.onUpdated.addListener((tabId, changeInfo, tabInfo) => {
 // todo: fix
 // @ts-ignore
 browser.proxy.onRequest.addListener(
+  // todo fix
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (requestInfo: any) => {
-    // todo fix
     const currentSettings = settings.getSettings();
     const domain = getUrlDomain(requestInfo.url);
     if (domain && isProxyEnabledForDomain(currentSettings, domain)) {
