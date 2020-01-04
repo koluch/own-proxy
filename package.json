@@ -3,17 +3,19 @@
   "version": "0.1.3",
   "description": "Simple extension to support proxy connecting vie authorizes SOCKS5",
   "main": "index.js",
+  "appId": "{391fab89-c8ee-4042-bc54-4b2bcf477fac}",
   "scripts": {
     "clean": "rm -rf ./build && rm -rf ./*.zip",
     "build:ts": "npx tsc",
     "build:copy": "mkdir -p build && cp -R manifest.json LICENSE build && find src -type f -not -name *.ts -exec rsync -R {} build ';'",
-    "build:pack": "VERSION=`node -p -e \"require('./package.json').version\"` && cd build && zip -r ../own-proxy-${VERSION}.zip ./*",
-    "build": "npm run clean && npm run build:ts && npm run build:copy && npm run build:pack",
+    "build:update-manifest": "VERSION=`node -p -e \"require('./package.json').version\"` APP_ID=`node -p -e \"require('./package.json').appId\"` && node scripts/update_manifest.js build/manifest.json $VERSION $APP_ID",
+    "build:pack": "cd build && VERSION=`node -p -e \"require('./manifest.json').version\"` && zip -r ../own-proxy-${VERSION}.zip ./*",
+    "build": "npm run clean && npx run-s build:*",
     "test:lint": "npx eslint --ext ts,tsx ./src",
     "test:types": "npx tsc --noEmit",
-    "test": "npm run test:types",
+    "test": "npx run-s test:*",
     "fix:lint": "npx eslint --fix --ext ts,tsx ./src",
-    "fix:prettier": "npx prettier --write ./src/**/*.{ts,tsx}\n"
+    "fix:prettier": "npx prettier --write ./src/**/*.{ts,tsx}"
   },
   "repository": {
     "type": "git",
@@ -33,6 +35,7 @@
     "eslint-config-prettier": "^6.9.0",
     "husky": "^3.1.0",
     "lint-staged": "^9.4.3",
+    "npm-run-all": "^4.1.5",
     "prettier": "^1.19.1",
     "typescript": "^3.7.4",
     "web-ext-types": "^3.2.1"
