@@ -1,9 +1,13 @@
 // Initialize the list of blocked hosts
 
-import state from "../common/state.js";
-import settings from "../common/settings.js";
-import { Dict, DictOpt, isProxyEnabledForDomain } from "../common/helpers.js";
-import { getDomain, getTheme, Theme } from "../common/browser.js";
+import * as settings from "../common/settings.js";
+import {
+  Dict,
+  DictOpt,
+  getUrlDomain,
+  isProxyEnabledForDomain,
+} from "../common/helpers.js";
+import { getActiveTab, getTheme, Theme } from "../common/browser.js";
 
 const ICONS: Dict<Theme, DictOpt<string, string>> = {
   LIGHT: {
@@ -16,22 +20,22 @@ const ICONS: Dict<Theme, DictOpt<string, string>> = {
   },
 };
 
-function handleChanges() {
+async function handleChanges(): Promise<void> {
+  const currentSettings: settings.Settings = settings.getSettings();
   const theme = getTheme();
-  getDomain().then(domain => {
-    const isProxyEnabled: boolean =
-      domain != null && isProxyEnabledForDomain(domain);
+  const activeTab = await getActiveTab();
+  const domain = activeTab.url != null ? getUrlDomain(activeTab.url) : null;
+  const isProxyEnabled: boolean =
+    domain != null && isProxyEnabledForDomain(currentSettings, domain);
 
-    browser.browserAction.setIcon({ path: ICONS[theme][`${isProxyEnabled}`] });
-    browser.browserAction.setTitle({
-      title: isProxyEnabled ? "Proxy is used" : "Proxy is not used",
-    });
+  browser.browserAction.setIcon({ path: ICONS[theme][`${isProxyEnabled}`] });
+  browser.browserAction.setTitle({
+    title: isProxyEnabled ? "Proxy is used" : "Proxy is not used",
   });
 }
 
 browser.runtime.onInstalled.addListener(handleChanges);
 
-state.listen(handleChanges);
 settings.listen(handleChanges);
 browser.tabs.onActivated.addListener(handleChanges);
 browser.tabs.onUpdated.addListener((tabId, changeInfo, tabInfo) => {
@@ -45,9 +49,9 @@ browser.tabs.onUpdated.addListener((tabId, changeInfo, tabInfo) => {
 browser.proxy.onRequest.addListener(
   (requestInfo: any) => {
     // todo fix
-    const domain = new URL(requestInfo.url).host;
-    if (isProxyEnabledForDomain(domain)) {
-      const currentSettings = settings.getState();
+    const currentSettings = settings.getSettings();
+    const domain = getUrlDomain(requestInfo.url);
+    if (domain && isProxyEnabledForDomain(currentSettings, domain)) {
       return {
         type: "socks",
         host: currentSettings.host,

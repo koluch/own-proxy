@@ -1,11 +1,10 @@
 import "../common/settings.js";
-import settings from "../common/settings.js";
+import * as settings from "../common/settings.js";
 import { $ } from "../common/dom.js";
 
 function storeSettings() {
-  const currentSettings = settings.getState();
-  settings.update({
-    ...currentSettings,
+  settings.setSettings({
+    ...settings.getSettings(),
     host: $("#host").value,
     port: parseInt($("#port").value) || 0,
     user: $("#user").value,
@@ -15,15 +14,14 @@ function storeSettings() {
 }
 
 function resetDomainSpecificSettings() {
-  const currentSettings = settings.getState();
-  settings.update({
-    ...currentSettings,
+  settings.setSettings({
+    ...settings.getSettings(),
     domainSpecificSettings: {},
   });
 }
 
-function renderOptions() {
-  const currentSettings = settings.getState();
+function render() {
+  const currentSettings = settings.getSettings();
   $("#host").value = currentSettings.host;
   $("#port").value = currentSettings.port;
   $("#user").value = currentSettings.user;
@@ -31,14 +29,12 @@ function renderOptions() {
   $("#onByDefault").checked = currentSettings.onByDefault;
 }
 
-settings.listen(renderOptions);
+settings.listen(render);
 
 // todo: fix
 function onError(e: any) {
   console.error(e);
 }
-
-// browser.storage.local.get().then(render, onError);
 
 $("#save-button").addEventListener("click", () => {
   storeSettings();

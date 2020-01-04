@@ -1,13 +1,14 @@
-import { createStore } from "./store.js";
+import { createStore, Listener } from "./store.js";
 import { DictOpt } from "./helpers";
 
 export type DomainName = string;
 
+export type UseProxyMode = "DEFAULT" | "ALWAYS" | "NEVER";
 export type DomainSettings = {
-  useProxy: "DEFAULT" | "ALWAYS" | "NEVER";
+  useProxy: UseProxyMode;
 };
 
-const DEFAULT_DOMAIN_SETTINGS: DomainSettings = {
+export const DEFAULT_DOMAIN_SETTINGS: DomainSettings = {
   useProxy: "DEFAULT",
 };
 
@@ -29,22 +30,14 @@ const store = createStore<Settings>("SETTINGS", {
   domainSpecificSettings: {},
 });
 
-export function setDomainSettings(domain: string, newSettings: any) {
-  const state = store.getState();
-  const domainSettingsTable = state.domainSpecificSettings;
-  const domainSettings = domainSettingsTable[domain] || {};
-  store.update({
-    ...state,
-    domainSpecificSettings: {
-      ...domainSettings,
-      ...newSettings,
-    },
-  });
+export function getSettings(): Settings {
+  return store.getState();
 }
 
-export function getDomainSetting(domain: string) {
-  const state = store.getState();
-  return state.domainSpecificSettings[domain] || DEFAULT_DOMAIN_SETTINGS;
+export async function setSettings(newSettings: Settings): Promise<void> {
+  await store.update(newSettings);
 }
 
-export default store;
+export async function listen(listener: Listener<Settings>): Promise<void> {
+  await store.listen(listener);
+}

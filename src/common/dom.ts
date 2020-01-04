@@ -7,6 +7,6 @@ export function $(selector: string): any {
   return result;
 }
 
-export function $$(selector: string) {
+export function $$(selector: string): any[] {
   return [...document.querySelectorAll(selector)];
 }

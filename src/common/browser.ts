@@ -1,23 +1,12 @@
-export function getDomain(): Promise<string | null> {
-  return browser.tabs
-    .query({ currentWindow: true, active: true })
-    .then(tabs => {
-      if (tabs.length > 0) {
-        const tab = tabs[0];
-        if (tab.url != null) {
-          try {
-            return new URL(tab.url).host;
-          } catch (e) {
-            console.warn(
-              `Unable to parse domain from current tab: ${e.message}`,
-            );
-          }
-        }
-        return null;
-      } else {
-        throw new Error("There are no tabs in current window");
-      }
-    });
+import Tab = browser.tabs.Tab;
+
+export async function getActiveTab(): Promise<Tab> {
+  const tabs = await browser.tabs.query({ currentWindow: true, active: true });
+  if (tabs.length > 0) {
+    return tabs[0];
+  } else {
+    throw new Error("There are no tabs in current window");
+  }
 }
 
 export type Theme = "LIGHT" | "DARK";
