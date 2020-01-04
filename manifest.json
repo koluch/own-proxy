@@ -27,7 +27,7 @@
 
   "browser_specific_settings": {
     "gecko": {
-      "id": "debug"
+      "id": "debug@debug.debug"
     }
   }
 }
