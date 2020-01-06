@@ -23,16 +23,16 @@ body {
   color: #000000;
 }
 
-#current_domain {
+.currentDomain {
   font-size: 1.5rem;
   font-weight: bold;
 }
 
-#current_state {
+.currentState {
   margin-top: 0.5rem;
   font-size: 0.9rem;
 }
-#current_state > span {
+.currentState > span {
   font-weight: bold;
 }
 
@@ -58,7 +58,6 @@ body {
   padding: 0.5rem 1rem;
   font-size: 0.8rem;
   color: white;
-  display: none;
 }
 
 .isClickable {

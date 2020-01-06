@@ -6,15 +6,20 @@
   "appId": "{391fab89-c8ee-4042-bc54-4b2bcf477fac}",
   "scripts": {
     "clean": "rm -rf ./build && rm -rf ./*.zip",
-    "build:ts": "npx tsc",
-    "build:copy": "mkdir -p build && cp -R manifest.json LICENSE build && find src -type f -not -name *.ts -exec rsync -R {} build ';'",
+    "all": "npx run-s -l",
+    "build:prepare": "npm run clean && mkdir -p build",
+    "build:parcel": "npx parcel build entry-points/**/*.html -d build/entry-points/ --public-url /entry-points/",
+    "build:copy-assets": "cp manifest.json LICENSE build && cp -R ./assets/ build/assets",
     "build:update-manifest": "VERSION=`node -p -e \"require('./package.json').version\"` APP_ID=`node -p -e \"require('./package.json').appId\"` && node scripts/update_manifest.js build/manifest.json $VERSION $APP_ID",
     "build:pack": "cd build && VERSION=`node -p -e \"require('./manifest.json').version\"` && zip -r ../own-proxy-${VERSION}.zip ./*",
-    "build": "npm run clean && npx run-s build:*",
-    "test:lint": "npx eslint --ext ts,tsx ./src",
+    "build": "npm run all test build:*",
+    "test:lint": "npx eslint --ext ts,tsx ./entry-points",
     "test:types": "npx tsc --noEmit",
-    "test": "npx run-s test:*",
-    "fix:lint": "npx eslint --fix --ext ts,tsx ./src",
+    "test": "npm run all test:*",
+    "start:build": "npm run build:prepare && npm run build:copy-assets",
+    "start:parcel": "npx parcel watch entry-points/**/*.html -d build/entry-points/ --public-url /entry-points/",
+    "start": "npm run all start:*",
+    "fix:lint": "npx eslint --fix --ext ts,tsx ./entry-points/",
     "fix:prettier": "npx prettier --write ./src/**/*.{ts,tsx}"
   },
   "repository": {
@@ -27,15 +32,21 @@
     "url": "https://github.com/koluch/own-proxy/issues"
   },
   "homepage": "https://github.com/koluch/own-proxy#readme",
-  "dependencies": {},
+  "dependencies": {
+    "classnames": "^2.2.6",
+    "preact": "^10.1.1"
+  },
   "devDependencies": {
+    "@types/classnames": "^2.2.9",
     "@typescript-eslint/eslint-plugin": "^2.14.0",
     "@typescript-eslint/parser": "^2.14.0",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.9.0",
+    "eslint-plugin-import": "^2.19.1",
     "husky": "^3.1.0",
     "lint-staged": "^9.4.3",
     "npm-run-all": "^4.1.5",
+    "parcel-bundler": "^1.12.4",
     "prettier": "^1.19.1",
     "typescript": "^3.7.4",
     "web-ext-types": "^3.2.1"
@@ -50,6 +61,9 @@
   "prettier": {
     "trailingComma": "all"
   },
+  "browserslist": [
+    "Firefox >= 71"
+  ],
   "husky": {
     "hooks": {
       "pre-commit": "npx lint-staged && npm run test:types"

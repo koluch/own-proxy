@@ -1,4 +1,6 @@
-import Tab = browser.tabs.Tab;
+import BrowserTab = browser.tabs.Tab;
+
+export type Tab = BrowserTab;
 
 export async function getActiveTab(): Promise<Tab> {
   const tabs = await browser.tabs.query({ currentWindow: true, active: true });

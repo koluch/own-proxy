@@ -1,4 +1,4 @@
-import { createStore, Listener } from "./store.js";
+import { createStore, Listener } from "./store";
 import { DictOpt } from "./helpers";
 import StorageObject = browser.storage.StorageObject;
 import StorageValue = browser.storage.StorageValue;

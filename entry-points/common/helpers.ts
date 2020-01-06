@@ -1,4 +1,4 @@
-import { DEFAULT_DOMAIN_SETTINGS, Settings } from "./settings.js";
+import { DEFAULT_DOMAIN_SETTINGS, Settings } from "./settings";
 
 export type Dict<K extends string, T> = { [P in K]: T };
 export type DictOpt<K extends string, T> = { [P in K]?: T };

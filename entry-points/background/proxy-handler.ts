@@ -1,22 +1,22 @@
 // Initialize the list of blocked hosts
 
-import * as settings from "../common/settings.js";
+import * as settings from "../common/settings";
 import {
   Dict,
   DictOpt,
   getUrlDomain,
   isProxyEnabledForDomain,
-} from "../common/helpers.js";
-import { getActiveTab, getTheme, Theme } from "../common/browser.js";
+} from "../common/helpers";
+import { getActiveTab, getTheme, Theme } from "../common/browser";
 
 const ICONS: Dict<Theme, DictOpt<string, string>> = {
   LIGHT: {
-    true: "../icons/proxy-on-icon.svg",
-    false: "../icons/proxy-off-icon-light.svg",
+    true: "/assets/icons/proxy-on-icon.svg",
+    false: "/assets/icons/proxy-off-icon-light.svg",
   },
   DARK: {
-    true: "../icons/proxy-on-icon.svg",
-    false: "../icons/proxy-off-icon-dark.svg",
+    true: "/assets/icons/proxy-on-icon.svg",
+    false: "/assets/icons/proxy-off-icon-dark.svg",
   },
 };
 

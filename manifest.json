@@ -5,21 +5,21 @@
   "version": "debug",
 
   "icons": {
-    "48": "src/icons/proxy-off-icon-light.svg"
+    "48": "/assets/icons/proxy-off-icon-light.svg"
   },
 
   "browser_action": {
     "browser_style": true,
     "default_title": "Proxy",
-    "default_popup": "src/popups/main_popup.html"
+    "default_popup": "/entry-points/popups/main_popup.html"
   },
 
   "background": {
-    "page": "src/background/background.html"
+    "page": "/entry-points/background/background.html"
   },
 
   "options_ui": {
-    "page": "src/options/options.html",
+    "page": "/entry-points/options/options.html",
     "browser_style": true
   },
 
