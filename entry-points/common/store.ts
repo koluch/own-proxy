@@ -1,11 +1,16 @@
 import StorageValue = browser.storage.StorageValue;
+import {
+  PartialObserver,
+  Subscribable,
+  Subscription,
+  SubscriptionObserver,
+} from "light-observable";
+import { createSubject } from "light-observable/observable";
 
 export type Listener<T> = (value: T) => void;
 
-interface Store<T> {
-  update: (newState: T) => Promise<void>;
+interface Store<T> extends SubscriptionObserver<T>, Subscribable<T> {
   getState: () => T;
-  listen: (listener: Listener<T>) => void;
 }
 
 export function createStore<T>(
@@ -14,19 +19,11 @@ export function createStore<T>(
   serialize: (value: T) => StorageValue,
   deserialize: (object: StorageValue) => T,
 ): Store<T> {
-  const listeners: Listener<T>[] = [];
-  let state: T = initial;
-
-  function callListeners(): void {
-    for (const listener of listeners) {
-      listener(state);
-    }
-  }
+  const [stream, sink] = createSubject<T>(initial);
 
   browser.storage.local.get([storageKey]).then(data => {
     const item: StorageValue = data[storageKey];
-    state = item != null ? deserialize(item) : initial;
-    callListeners();
+    sink.next(item != null ? deserialize(item) : initial);
   });
 
   browser.runtime.onInstalled.addListener(details => {
@@ -37,22 +34,35 @@ export function createStore<T>(
 
   browser.storage.onChanged.addListener(changeData => {
     if (storageKey in changeData) {
-      state = changeData[storageKey].newValue;
-      callListeners();
+      sink.next(changeData[storageKey].newValue);
     }
   });
 
+  let currentValue = initial;
+  stream.subscribe(next => {
+    currentValue = next;
+  });
+
   return {
-    update: async (newState: T): Promise<void> => {
-      await browser.storage.local.set({
-        [storageKey]: serialize(newState),
-      });
-      state = newState;
-      callListeners();
+    subscribe(
+      next?: PartialObserver<T> | (<T>(value: T) => void),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      error?: (reason: any) => void,
+      complete?: () => void,
+    ): Subscription {
+      return stream.subscribe(next, error, complete);
     },
-    getState: (): T => state,
-    listen: (listener: Listener<T>): void => {
-      listeners.push(listener);
+    next: (newState: T) => {
+      browser.storage.local
+        .set({
+          [storageKey]: serialize(newState),
+        })
+        .then(() => {
+          sink.next(newState);
+        });
     },
+    error: reason => sink.error(reason),
+    complete: () => sink.complete(),
+    getState: () => currentValue,
   };
 }

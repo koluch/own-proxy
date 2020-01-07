@@ -1,5 +1,6 @@
-import { createStore, Listener } from "./store";
+import { createStore } from "./store";
 import { DictOpt } from "./helpers";
+import { Subscribable } from "light-observable";
 import StorageObject = browser.storage.StorageObject;
 import StorageValue = browser.storage.StorageValue;
 
@@ -67,14 +68,11 @@ const store = createStore<Settings>(
   },
 );
 
-export function getSettings(): Settings {
-  return store.getState();
+export function updateSettings(newSettings: Partial<Settings>): void {
+  store.next({
+    ...store.getState(),
+    ...newSettings,
+  });
 }
 
-export async function setSettings(newSettings: Settings): Promise<void> {
-  await store.update(newSettings);
-}
-
-export async function listen(listener: Listener<Settings>): Promise<void> {
-  await store.listen(listener);
-}
+export const asSubscribable: Subscribable<Settings> = store;

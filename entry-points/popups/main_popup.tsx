@@ -1,10 +1,15 @@
 import cn from "classnames";
 import { h, render, VNode } from "preact";
-import * as settings from "../common/settings";
-import { getSettings, Settings, UseProxyMode } from "../common/settings";
-import * as selectors from "../common/helpers";
-import { getUrlDomain } from "../common/helpers";
-import { getActiveTab, Tab } from "../common/browser";
+import { getUrlDomain, isProxyEnabledForDomain } from "../common/helpers";
+import { Tab } from "../common/browser";
+import activeTabObservable from "../common/activeTabObservable";
+import { combineLatest } from "light-observable/observable";
+import {
+  asSubscribable as settingsObservable,
+  Settings,
+  updateSettings,
+  UseProxyMode,
+} from "../common/settings";
 
 const OPTIONS: [UseProxyMode, { label: string }][] = [
   ["DEFAULT", { label: "Default behaviour" }],
@@ -28,8 +33,7 @@ const App = (props: { settings: Settings; activeTab: Tab }): VNode => {
 
   const isEnabledByDefault = currentSettings.onByDefault;
   const isEnabled =
-    domain != null &&
-    selectors.isProxyEnabledForDomain(currentSettings, domain);
+    domain != null && isProxyEnabledForDomain(currentSettings, domain);
 
   return (
     <div>
@@ -66,8 +70,7 @@ const App = (props: { settings: Settings; activeTab: Tab }): VNode => {
                 }
                 onClick={() => {
                   if (domain != null) {
-                    settings.setSettings({
-                      ...currentSettings,
+                    updateSettings({
                       domainSettings: {
                         ...domainSettingsDict,
                         [domain]: {
@@ -102,10 +105,8 @@ if (_rootEl == null) {
 }
 const rootEl = _rootEl;
 
-async function rerender(): Promise<void> {
-  const activeTab = await getActiveTab();
-  render(<App settings={getSettings()} activeTab={activeTab} />, rootEl);
-}
-
-settings.listen(rerender);
-rerender();
+combineLatest(activeTabObservable, settingsObservable).subscribe(
+  ([activeTab, currentSettings]) => {
+    render(<App settings={currentSettings} activeTab={activeTab} />, rootEl);
+  },
+);
