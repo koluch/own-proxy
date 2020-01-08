@@ -1,30 +1,22 @@
 import { h, render, VNode } from "preact";
-import {
-  asSubscribable as settingsObservable,
-  DEFAULT_SETTINGS,
-  Settings,
-  updateSettings,
-} from "../common/settings";
-import { Tab } from "../common/browser";
+import * as settingsService from "../common/observables/settings";
 import { useState } from "preact/hooks";
 import { JSXInternal } from "preact/src/jsx";
-import { combineLatest } from "light-observable/observable";
-import activeTabObservable from "../common/activeTabObservable";
 import TargetedEvent = JSXInternal.TargetedEvent;
 
 function resetDomainSettings(): void {
-  updateSettings({
-    domainSettings: DEFAULT_SETTINGS.domainSettings,
+  settingsService.DEFAULT.write({
+    domainSettings: settingsService.DEFAULT_SETTINGS.domainSettings,
   });
 }
 
-const App = (props: { settings: Settings; activeTab: Tab }): VNode => {
-  const { settings: currentSettings, activeTab } = props;
+const App = (props: { settings: settingsService.Settings }): VNode => {
+  const { settings: currentSettings } = props;
 
   const [formState, setFormState] = useState(currentSettings);
 
   function handleSave(): void {
-    updateSettings({
+    settingsService.DEFAULT.write({
       host: formState.host,
       port: formState.port,
       user: formState.user,
@@ -152,8 +144,6 @@ if (_rootEl == null) {
 }
 const rootEl = _rootEl;
 
-combineLatest(activeTabObservable, settingsObservable).subscribe(
-  ([activeTab, currentSettings]) => {
-    render(<App settings={currentSettings} activeTab={activeTab} />, rootEl);
-  },
-);
+settingsService.DEFAULT.subscribe(settings => {
+  render(<App settings={settings} />, rootEl);
+});

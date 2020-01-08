@@ -1,12 +1,9 @@
-import {
-  asSubscribable as settingsObservable,
-  DEFAULT_SETTINGS,
-} from "../common/settings";
+import * as settingsService from "../common/observables/settings";
 import { getUrlDomain, isProxyEnabledForDomain } from "../common/helpers";
 
-let currentSettings = DEFAULT_SETTINGS;
-settingsObservable.subscribe(next => {
-  currentSettings = DEFAULT_SETTINGS;
+let settings = settingsService.DEFAULT_SETTINGS;
+settingsService.DEFAULT.subscribe(next => {
+  settings = next;
 });
 
 // todo: fix
@@ -16,13 +13,13 @@ browser.proxy.onRequest.addListener(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (requestInfo: any) => {
     const domain = getUrlDomain(requestInfo.url);
-    if (domain && isProxyEnabledForDomain(currentSettings, domain)) {
+    if (domain && isProxyEnabledForDomain(settings, domain)) {
       return {
         type: "socks",
-        host: currentSettings.host,
-        port: currentSettings.port,
-        username: currentSettings.user,
-        password: currentSettings.password,
+        host: settings.host,
+        port: settings.port,
+        username: settings.user,
+        password: settings.password,
       };
     }
     return { type: "direct" };

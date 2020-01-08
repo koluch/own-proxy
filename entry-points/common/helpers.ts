@@ -1,14 +1,14 @@
-import { DEFAULT_DOMAIN_SETTINGS, Settings } from "./settings";
+import * as settingsService from "./observables/settings";
 
 export type Dict<K extends string, T> = { [P in K]: T };
 export type DictOpt<K extends string, T> = { [P in K]?: T };
 
 export function isProxyEnabledForDomain(
-  settings: Settings,
+  settings: settingsService.Settings,
   domain: string,
 ): boolean {
   const domainSettings =
-    settings.domainSettings[domain] || DEFAULT_DOMAIN_SETTINGS;
+    settings.domainSettings[domain] || settingsService.DEFAULT_DOMAIN_SETTINGS;
   if (domainSettings.useProxy === "NEVER") {
     return false;
   }

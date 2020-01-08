@@ -1,4 +1,3 @@
-import { asSubscribable as settingsObservable } from "../common/settings";
 import {
   Dict,
   DictOpt,
@@ -7,7 +6,8 @@ import {
 } from "../common/helpers";
 import { getTheme, Theme } from "../common/browser";
 import { combineLatest } from "light-observable/observable";
-import activeTabObservable from "../common/activeTabObservable";
+import * as settingsService from "../common/observables/settings";
+import * as activeTabService from "../common/observables/activeTab";
 
 const ICONS: Dict<Theme, DictOpt<string, string>> = {
   LIGHT: {
@@ -20,12 +20,12 @@ const ICONS: Dict<Theme, DictOpt<string, string>> = {
   },
 };
 
-combineLatest(activeTabObservable, settingsObservable).subscribe(
-  ([activeTab, currentSettings]) => {
+combineLatest(activeTabService.DEFAULT, settingsService.DEFAULT).subscribe(
+  ([activeTab, settings]) => {
     const theme = getTheme();
     const domain = activeTab.url != null ? getUrlDomain(activeTab.url) : null;
     const isProxyEnabled: boolean =
-      domain != null && isProxyEnabledForDomain(currentSettings, domain);
+      domain != null && isProxyEnabledForDomain(settings, domain);
 
     browser.browserAction.setIcon({ path: ICONS[theme][`${isProxyEnabled}`] });
     browser.browserAction.setTitle({

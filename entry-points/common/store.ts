@@ -7,9 +7,7 @@ import {
 } from "light-observable";
 import { createSubject } from "light-observable/observable";
 
-export type Listener<T> = (value: T) => void;
-
-interface Store<T> extends SubscriptionObserver<T>, Subscribable<T> {
+export interface Store<T> extends SubscriptionObserver<T>, Subscribable<T> {
   getState: () => T;
 }
 

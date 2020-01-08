@@ -2,16 +2,11 @@ import cn from "classnames";
 import { h, render, VNode } from "preact";
 import { getUrlDomain, isProxyEnabledForDomain } from "../common/helpers";
 import { Tab } from "../common/browser";
-import activeTabObservable from "../common/activeTabObservable";
+import * as activeTabService from "../common/observables/activeTab";
+import * as settingsService from "../common/observables/settings";
 import { combineLatest } from "light-observable/observable";
-import {
-  asSubscribable as settingsObservable,
-  Settings,
-  updateSettings,
-  UseProxyMode,
-} from "../common/settings";
 
-const OPTIONS: [UseProxyMode, { label: string }][] = [
+const OPTIONS: [settingsService.UseProxyMode, { label: string }][] = [
   ["DEFAULT", { label: "Default behaviour" }],
   ["NEVER", { label: "Never proxy this site" }],
   ["ALWAYS", { label: "Always proxy this site" }],
@@ -22,18 +17,20 @@ const Warning = (props: { onClick?: () => void; children: string }): VNode => {
   return <div onClick={props.onClick}>{props.children}</div>;
 };
 
-const App = (props: { settings: Settings; activeTab: Tab }): VNode => {
-  const { settings: currentSettings, activeTab } = props;
+const App = (props: {
+  settings: settingsService.Settings;
+  activeTab: Tab;
+}): VNode => {
+  const { settings, activeTab } = props;
 
-  const isConfigNotSet = currentSettings.host === "";
+  const isConfigNotSet = settings.host === "";
 
   const domain = activeTab.url ? getUrlDomain(activeTab.url) : null;
-  const domainSettingsDict = currentSettings.domainSettings;
+  const domainSettingsDict = settings.domainSettings;
   const domainSettings = domain ? domainSettingsDict[domain] : null;
 
-  const isEnabledByDefault = currentSettings.onByDefault;
-  const isEnabled =
-    domain != null && isProxyEnabledForDomain(currentSettings, domain);
+  const isEnabledByDefault = settings.onByDefault;
+  const isEnabled = domain != null && isProxyEnabledForDomain(settings, domain);
 
   return (
     <div>
@@ -70,7 +67,7 @@ const App = (props: { settings: Settings; activeTab: Tab }): VNode => {
                 }
                 onClick={() => {
                   if (domain != null) {
-                    updateSettings({
+                    settingsService.DEFAULT.write({
                       domainSettings: {
                         ...domainSettingsDict,
                         [domain]: {
@@ -105,8 +102,8 @@ if (_rootEl == null) {
 }
 const rootEl = _rootEl;
 
-combineLatest(activeTabObservable, settingsObservable).subscribe(
-  ([activeTab, currentSettings]) => {
-    render(<App settings={currentSettings} activeTab={activeTab} />, rootEl);
+combineLatest(activeTabService.DEFAULT, settingsService.DEFAULT).subscribe(
+  ([activeTab, settings]) => {
+    render(<App settings={settings} activeTab={activeTab} />, rootEl);
   },
 );
