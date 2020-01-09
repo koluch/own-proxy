@@ -49,7 +49,7 @@ const DomainSettings = (props: {
         }
 
         return (
-          <div key={domain} className="domainSettingsRow">
+          <div className="domainSettingsRow" key={domain}>
             <div
               className={cn("domainSettingsItemDomain", "domainSettingsItem")}
             >
