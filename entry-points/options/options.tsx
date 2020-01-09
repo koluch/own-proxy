@@ -17,7 +17,12 @@ const DomainSettings = (props: {
   const { domainSettingsDict, setDomainSettingsDict } = props;
   return (
     <div className={cn("domainSettings")}>
-      {Object.entries(domainSettingsDict).map(([domain, domainSettings]) => {
+      {Object.keys(domainSettingsDict).map(domain => {
+        const domainSettings = domainSettingsDict[domain];
+        if (domainSettings == null) {
+          throw new Error(`This should never happen`);
+        }
+
         function handleUseProxyChange(
           e: JSX.TargetedEvent<HTMLSelectElement>,
         ): void {

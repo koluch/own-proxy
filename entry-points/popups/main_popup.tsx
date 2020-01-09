@@ -6,7 +6,7 @@ import * as activeTabService from "../common/observables/activeTab";
 import * as settingsService from "../common/observables/settings";
 import { combineLatest } from "light-observable/observable";
 
-const OPTIONS: [settingsService.UseProxyMode, { label: string }][] = [
+const OPTIONS: [string, { label: string }][] = [
   ["DEFAULT", { label: "Default behaviour" }],
   ["NEVER", { label: "Never proxy this site" }],
   ["ALWAYS", { label: "Always proxy this site" }],
@@ -69,15 +69,24 @@ const App = (props: {
                 }
                 onClick={() => {
                   if (domain != null) {
-                    settingsService.DEFAULT.write({
-                      domainSettings: {
+                    if (value === "DEFAULT") {
+                      const { [domain]: _, ...newDomainSettingsDict } = {
                         ...domainSettingsDict,
-                        [domain]: {
-                          ...domainSettings,
-                          useProxy: value,
+                      };
+                      settingsService.DEFAULT.write({
+                        domainSettings: newDomainSettingsDict,
+                      });
+                    } else if (value === "NEVER" || value === "ALWAYS") {
+                      settingsService.DEFAULT.write({
+                        domainSettings: {
+                          ...domainSettingsDict,
+                          [domain]: {
+                            ...domainSettings,
+                            useProxy: value,
+                          },
                         },
-                      },
-                    });
+                      });
+                    }
                   }
                 }}
               />

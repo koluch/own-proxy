@@ -1,19 +1,19 @@
 import { createStore, Store } from "../store";
-import { Dict } from "../helpers";
+import { DictOpt } from "../helpers";
 import { WriteableObservable } from "./service";
 import StorageObject = browser.storage.StorageObject;
 import StorageValue = browser.storage.StorageValue;
 
 export type DomainName = string;
 
-export const UseProxyModeValues = ["DEFAULT", "ALWAYS", "NEVER"] as const;
+export const UseProxyModeValues = ["ALWAYS", "NEVER"] as const;
 export type UseProxyMode = typeof UseProxyModeValues[number];
 
 export type DomainSettings = {
   useProxy: UseProxyMode;
 };
 
-export type DomainSettingsDict = Dict<DomainName, DomainSettings>;
+export type DomainSettingsDict = DictOpt<DomainName, DomainSettings>;
 
 export interface Settings {
   host: string;
@@ -24,20 +24,13 @@ export interface Settings {
   domainSettings: DomainSettingsDict;
 }
 
-export const DEFAULT_DOMAIN_SETTINGS: DomainSettings = {
-  useProxy: "DEFAULT",
-};
-
 export const DEFAULT_SETTINGS: Settings = {
   host: "",
   port: 1080,
   user: "",
   password: "",
   onByDefault: false,
-  domainSettings: {
-    "fuck.ru": { useProxy: "ALWAYS" },
-    "google.com": { useProxy: "NEVER" },
-  },
+  domainSettings: {},
 };
 
 export function create(store: Store<Settings>): WriteableObservable<Settings> {

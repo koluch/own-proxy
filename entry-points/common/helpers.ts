@@ -7,13 +7,14 @@ export function isProxyEnabledForDomain(
   settings: settingsService.Settings,
   domain: string,
 ): boolean {
-  const domainSettings =
-    settings.domainSettings[domain] || settingsService.DEFAULT_DOMAIN_SETTINGS;
-  if (domainSettings.useProxy === "NEVER") {
-    return false;
-  }
-  if (domainSettings.useProxy === "ALWAYS") {
-    return true;
+  const domainSettings = settings.domainSettings[domain];
+  if (domainSettings != null) {
+    if (domainSettings.useProxy === "NEVER") {
+      return false;
+    }
+    if (domainSettings.useProxy === "ALWAYS") {
+      return true;
+    }
   }
   return settings.onByDefault;
 }
