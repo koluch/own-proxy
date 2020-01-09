@@ -55,7 +55,7 @@ function App(props: {}): VNode | null {
           name="host"
           type="text"
           value={formState.host}
-          onChange={(e: JSX.TargetedEvent<HTMLInputElement>) => {
+          onInput={(e: JSX.TargetedEvent<HTMLInputElement>) => {
             setFormState(oldState => ({
               ...oldState,
               host: e.currentTarget.value,
@@ -71,7 +71,7 @@ function App(props: {}): VNode | null {
           name="port"
           type="number"
           value={formState.port}
-          onChange={(e: JSX.TargetedEvent<HTMLInputElement>) => {
+          onInput={(e: JSX.TargetedEvent<HTMLInputElement>) => {
             setFormState(oldState => ({
               ...oldState,
               port: parseInt(e.currentTarget.value, 10) || 0,
@@ -88,7 +88,7 @@ function App(props: {}): VNode | null {
           name="user"
           type="text"
           value={formState.user}
-          onChange={(e: JSX.TargetedEvent<HTMLInputElement>) => {
+          onInput={(e: JSX.TargetedEvent<HTMLInputElement>) => {
             setFormState(oldState => ({
               ...oldState,
               user: e.currentTarget.value,
@@ -105,7 +105,7 @@ function App(props: {}): VNode | null {
           name="password"
           type="text"
           value={formState.password}
-          onChange={(e: JSX.TargetedEvent<HTMLInputElement>) => {
+          onInput={(e: JSX.TargetedEvent<HTMLInputElement>) => {
             setFormState(oldState => ({
               ...oldState,
               password: e.currentTarget.value,
