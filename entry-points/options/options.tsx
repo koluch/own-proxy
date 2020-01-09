@@ -1,97 +1,11 @@
-import { Fragment, h, JSX, render, VNode } from "preact";
-import cn from "classnames";
+import { h, JSX, render, VNode } from "preact";
 import * as settingsService from "../common/observables/settings";
-import {
-  DomainSettingsDict,
-  Settings,
-  UseProxyMode,
-  UseProxyModeValues,
-} from "../common/observables/settings";
+import { Settings } from "../common/observables/settings";
 import { useEffect, useState } from "preact/hooks";
 import { isEqual } from "../common/helpers";
+import DomainSettings from "./DomainSettings";
 
-const DomainSettings = (props: {
-  domainSettingsDict: DomainSettingsDict;
-  setDomainSettingsDict: (domainSettings: DomainSettingsDict) => void;
-}): VNode => {
-  const { domainSettingsDict, setDomainSettingsDict } = props;
-  return (
-    <div className={cn("domainSettings")}>
-      {Object.keys(domainSettingsDict).map(domain => {
-        const domainSettings = domainSettingsDict[domain];
-        if (domainSettings == null) {
-          throw new Error(`This should never happen`);
-        }
-
-        function handleUseProxyChange(
-          e: JSX.TargetedEvent<HTMLSelectElement>,
-        ): void {
-          const value = e.currentTarget.value || "DEFAULT";
-          setDomainSettingsDict({
-            ...domainSettingsDict,
-            [domain]: {
-              ...domainSettings,
-              useProxy: value as UseProxyMode,
-            },
-          });
-        }
-
-        function handleDeleteChange(): void {
-          const newDict: DomainSettingsDict = {};
-          for (const [nextDomain, nextSettings] of Object.entries(
-            domainSettingsDict,
-          )) {
-            if (domain !== nextDomain) {
-              newDict[nextDomain] = nextSettings;
-            }
-          }
-          setDomainSettingsDict(newDict);
-        }
-
-        return (
-          <div className="domainSettingsRow" key={domain}>
-            <div
-              className={cn("domainSettingsItemDomain", "domainSettingsItem")}
-            >
-              <div>{domain}</div>
-            </div>
-            <div
-              className={cn("domainSettingsItemUseProxy", "domainSettingsItem")}
-            >
-              <select
-                value={domainSettings.useProxy}
-                className={cn(
-                  "browser-style",
-                  "domainSettingsItemUseProxySelect",
-                )}
-                onInput={handleUseProxyChange}
-              >
-                {UseProxyModeValues.map(value => (
-                  <option value={value}>{value}</option>
-                ))}
-              </select>
-            </div>
-            <div
-              className={cn("domainSettingsItemDelete", "domainSettingsItem")}
-            >
-              <button
-                className={cn(
-                  "browser-style",
-                  "domainSettingsItemDeleteButton",
-                )}
-                onClick={handleDeleteChange}
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  );
-};
-
-const App = (props: {}): VNode | null => {
+function App(props: {}): VNode | null {
   const [formState, setFormState] = useState<Settings>(
     settingsService.DEFAULT_SETTINGS,
   );
@@ -216,29 +130,27 @@ const App = (props: {}): VNode | null => {
           }}
         />
 
+        <label className="title">Domain settings:</label>
+        <DomainSettings
+          domainSettingsDict={formState.domainSettings}
+          setDomainSettingsDict={newDomainSettingsDict => {
+            setFormState({
+              ...formState,
+              domainSettings: newDomainSettingsDict,
+            });
+          }}
+        />
         {Object.keys(formState.domainSettings).length > 0 && (
-          <Fragment>
-            <label className="title">Domain settings:</label>
-            <DomainSettings
-              domainSettingsDict={formState.domainSettings}
-              setDomainSettingsDict={newDomainSettingsDict => {
-                setFormState({
-                  ...formState,
-                  domainSettings: newDomainSettingsDict,
-                });
-              }}
-            />
-            <div className="buttons">
-              <button
-                className="browser-style"
-                type="button"
-                id="reset-button"
-                onClick={handleRemoveDomainSettings}
-              >
-                Remove domain-specific settings
-              </button>
-            </div>
-          </Fragment>
+          <div className="buttons">
+            <button
+              className="browser-style"
+              type="button"
+              id="reset-button"
+              onClick={handleRemoveDomainSettings}
+            >
+              Remove domain-specific settings
+            </button>
+          </div>
         )}
 
         <div className="buttons">
@@ -264,7 +176,7 @@ const App = (props: {}): VNode | null => {
       </section>
     </div>
   );
-};
+}
 
 const _rootEl = document.getElementById("app");
 if (_rootEl == null) {

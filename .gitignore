@@ -4,3 +4,4 @@ node_modules
 build
 entry-points/**/*.js
 .cache
+.DS_Store
