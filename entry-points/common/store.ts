@@ -17,11 +17,12 @@ export function createStore<T>(
   serialize: (value: T) => StorageValue,
   deserialize: (object: StorageValue) => T,
 ): Store<T> {
-  const [stream, sink] = createSubject<T>(initial);
+  const [stream, sink] = createSubject<T>({ initial });
 
   browser.storage.local.get([storageKey]).then(data => {
     const item: StorageValue = data[storageKey];
-    sink.next(item != null ? deserialize(item) : initial);
+    const deserialize1 = deserialize(item);
+    sink.next(item != null ? deserialize1 : initial);
   });
 
   browser.runtime.onInstalled.addListener(details => {
@@ -57,6 +58,9 @@ export function createStore<T>(
         })
         .then(() => {
           sink.next(newState);
+        })
+        .catch(e => {
+          sink.error(e.message);
         });
     },
     error: reason => sink.error(reason),

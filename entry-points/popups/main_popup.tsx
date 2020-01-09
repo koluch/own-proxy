@@ -63,7 +63,9 @@ const App = (props: {
                 type="radio"
                 disabled={domain == null}
                 checked={
-                  domainSettings ? domainSettings.useProxy === value : false
+                  domainSettings
+                    ? domainSettings.useProxy === value
+                    : value === "DEFAULT"
                 }
                 onClick={() => {
                   if (domain != null) {
