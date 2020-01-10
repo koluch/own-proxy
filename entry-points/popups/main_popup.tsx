@@ -1,5 +1,5 @@
 import cn from "classnames";
-import { h, render, VNode } from "preact";
+import { Fragment, h, render, VNode } from "preact";
 import { getUrlDomain, isProxyEnabledForDomain } from "../common/helpers";
 import { Tab } from "../common/browser";
 import * as activeTabService from "../common/observables/activeTab";
@@ -34,7 +34,7 @@ const App = (props: {
   const [isEnabled, reason] = isProxyEnabledForDomain(settings, domain);
 
   return (
-    <div>
+    <Fragment>
       <section className="warnings">
         {isConfigNotSet && (
           <Warning
@@ -47,68 +47,84 @@ const App = (props: {
           </Warning>
         )}
       </section>
-      <section id="top" className={cn("top", isEnabled && "isEnabled")}>
-        <div className="currentDomain">{domain || "(no domain)"}</div>
-        <div className="currentState">
-          <UIMessage
-            params={{ isEnabled: <b>{isEnabled ? "used" : "not used"}</b> }}
-          >
-            {reason}
-          </UIMessage>
-        </div>
-      </section>
-      <section className="bottom">
-        <ul className="optionsList">
-          {OPTIONS.map(([value, { label }]) => (
-            <li className="option">
-              <input
-                className={cn("browser-style", "domain_setting")}
-                name="domain_setting"
-                value={value}
-                type="radio"
-                disabled={domain == null}
-                checked={
-                  domainSettings
-                    ? domainSettings.useProxy === value
-                    : value === "DEFAULT"
-                }
-                onClick={() => {
-                  if (domain != null) {
-                    if (value === "DEFAULT") {
-                      const { [domain]: _, ...newDomainSettingsDict } = {
-                        ...domainSettingsDict,
-                      };
-                      settingsService.DEFAULT.write({
-                        domainSettings: newDomainSettingsDict,
-                      });
-                    } else if (value === "NEVER" || value === "ALWAYS") {
-                      settingsService.DEFAULT.write({
-                        domainSettings: {
-                          ...domainSettingsDict,
-                          [domain]: {
-                            ...domainSettings,
-                            useProxy: value,
-                          },
-                        },
-                      });
-                    }
+      <div className={cn("content", isEnabled && "isEnabled")}>
+        <section className={cn("section", "top")}>
+          <div className="currentDomain">{domain || "(no domain)"}</div>
+        </section>
+        <section className={cn("section", "top")}>
+          <div className="currentState">
+            <UIMessage
+              params={{ isEnabled: <b>{isEnabled ? "used" : "not used"}</b> }}
+            >
+              {reason}
+            </UIMessage>
+          </div>
+        </section>
+        <section className={cn("section", "middle")}>
+          <ul className="optionsList">
+            {OPTIONS.map(([value, { label }]) => (
+              <li className="option">
+                <input
+                  className={cn("browser-style", "domain_setting")}
+                  name="domain_setting"
+                  value={value}
+                  type="radio"
+                  disabled={domain == null}
+                  checked={
+                    domainSettings
+                      ? domainSettings.useProxy === value
+                      : value === "DEFAULT"
                   }
-                }}
-              />
-              <label className="browser-style" for="domain_proxy_default">
-                {label}
-                {value === "DEFAULT" && (
-                  <span id="default_behaviour">
-                    {" "}
-                    ({isEnabledByDefault ? "use proxy" : `don't use proxy`})
-                  </span>
-                )}
-              </label>
-            </li>
-          ))}
-        </ul>
-      </section>
-    </div>
+                  onClick={() => {
+                    if (domain != null) {
+                      if (value === "DEFAULT") {
+                        const { [domain]: _, ...newDomainSettingsDict } = {
+                          ...domainSettingsDict,
+                        };
+                        settingsService.DEFAULT.write({
+                          domainSettings: newDomainSettingsDict,
+                        });
+                      } else if (value === "NEVER" || value === "ALWAYS") {
+                        settingsService.DEFAULT.write({
+                          domainSettings: {
+                            ...domainSettingsDict,
+                            [domain]: {
+                              ...domainSettings,
+                              useProxy: value,
+                            },
+                          },
+                        });
+                      }
+                    }
+                  }}
+                />
+                <label className="browser-style" for="domain_proxy_default">
+                  {label}
+                  {value === "DEFAULT" && (
+                    <span id="default_behaviour">
+                      {" "}
+                      ({isEnabledByDefault ? "use proxy" : `don't use proxy`})
+                    </span>
+                  )}
+                </label>
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section className={cn("section", "footer")}>
+          <div className={"optionsPageLink"}>
+            <a
+              href="#"
+              onClick={() => {
+                browser.runtime.openOptionsPage();
+              }}
+            >
+              Settings
+            </a>
+          </div>
+        </section>
+      </div>
+    </Fragment>
   );
 };
 
