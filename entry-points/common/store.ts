@@ -19,14 +19,14 @@ export function createStore<T>(
 ): Store<T> {
   const [stream, sink] = createSubject<T>({ initial });
 
-  browser.storage.local.get([storageKey]).then(data => {
+  browser.storage.sync.get([storageKey]).then(data => {
     const item: StorageValue = data[storageKey];
     const deserialize1 = deserialize(item);
     sink.next(item != null ? deserialize1 : initial);
   });
 
   browser.runtime.onInstalled.addListener(details => {
-    browser.storage.local.set({
+    browser.storage.sync.set({
       [storageKey]: serialize(initial),
     });
   });
@@ -52,7 +52,7 @@ export function createStore<T>(
       return stream.subscribe(next, error, complete);
     },
     next: (newState: T) => {
-      browser.storage.local
+      browser.storage.sync
         .set({
           [storageKey]: serialize(newState),
         })
