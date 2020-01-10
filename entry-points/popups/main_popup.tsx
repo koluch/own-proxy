@@ -5,11 +5,12 @@ import { Tab } from "../common/browser";
 import * as activeTabService from "../common/observables/activeTab";
 import * as settingsService from "../common/observables/settings";
 import { combineLatest } from "light-observable/observable";
+import { UIMessage } from "../common/uiMessages";
 
 const OPTIONS: [string, { label: string }][] = [
   ["DEFAULT", { label: "Default behaviour" }],
-  ["NEVER", { label: "Never proxy this site" }],
   ["ALWAYS", { label: "Always proxy this site" }],
+  ["NEVER", { label: "Never proxy this site" }],
 ];
 
 // Create your app
@@ -30,7 +31,7 @@ const App = (props: {
   const domainSettings = domain ? domainSettingsDict[domain] : null;
 
   const isEnabledByDefault = settings.onByDefault;
-  const isEnabled = domain != null && isProxyEnabledForDomain(settings, domain);
+  const [isEnabled, reason] = isProxyEnabledForDomain(settings, domain);
 
   return (
     <div>
@@ -49,7 +50,11 @@ const App = (props: {
       <section id="top" className={cn("top", isEnabled && "isEnabled")}>
         <div className="currentDomain">{domain || "(no domain)"}</div>
         <div className="currentState">
-          Proxy is <b>{isEnabled ? "used" : `not used`}</b> for this site
+          <UIMessage
+            params={{ isEnabled: <b>{isEnabled ? "used" : "not used"}</b> }}
+          >
+            {reason}
+          </UIMessage>
         </div>
       </section>
       <section className="bottom">

@@ -24,8 +24,7 @@ combineLatest(activeTabService.DEFAULT, settingsService.DEFAULT).subscribe(
   ([activeTab, settings]) => {
     const theme = getTheme();
     const domain = activeTab.url != null ? getUrlDomain(activeTab.url) : null;
-    const isProxyEnabled: boolean =
-      domain != null && isProxyEnabledForDomain(settings, domain);
+    const [isProxyEnabled] = isProxyEnabledForDomain(settings, domain);
 
     browser.browserAction.setIcon({ path: ICONS[theme][`${isProxyEnabled}`] });
     browser.browserAction.setTitle({

@@ -13,7 +13,8 @@ browser.proxy.onRequest.addListener(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (requestInfo: any) => {
     const domain = getUrlDomain(requestInfo.url);
-    if (domain && isProxyEnabledForDomain(settings, domain)) {
+    const [isEnabled] = isProxyEnabledForDomain(settings, domain);
+    if (isEnabled) {
       return {
         type: "socks",
         host: settings.host,

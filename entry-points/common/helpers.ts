@@ -1,22 +1,43 @@
 import * as settingsService from "./observables/settings";
+import { m, Message, p } from "./uiMessages";
 
 export type Dict<K extends string, T> = { [P in K]: T };
 export type DictOpt<K extends string, T> = { [P in K]?: T };
 
 export function isProxyEnabledForDomain(
   settings: settingsService.Settings,
-  domain: string,
-): boolean {
+  domain: string | null,
+): [boolean, Message<"isEnabled">] {
+  if (domain == null) {
+    return [
+      false,
+      m`Proxy is ${p(
+        "isEnabled",
+      )}, because this tab doesn't have domain in it's address`,
+    ];
+  }
   const domainSettings = settings.domainSettings[domain];
   if (domainSettings != null) {
     if (domainSettings.useProxy === "NEVER") {
-      return false;
+      return [
+        false,
+        m`Proxy is ${p(
+          "isEnabled",
+        )}, because you chose to never use it for this domain`,
+      ];
     }
     if (domainSettings.useProxy === "ALWAYS") {
-      return true;
+      return [
+        true,
+        m`Proxy is ${p(
+          "isEnabled",
+        )}, because you chose to always use it for this domain`,
+      ];
     }
   }
-  return settings.onByDefault;
+  return settings.onByDefault
+    ? [true, m`Proxy is ${p("isEnabled")}, because it's enabled by default`]
+    : [false, m`Proxy is ${p("isEnabled")}, because it's disabled by default`];
 }
 
 export function getUrlDomain(url: string): string | null {
