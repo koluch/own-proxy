@@ -8,15 +8,21 @@ import { getTheme, Theme } from "../common/browser";
 import { combineLatest } from "light-observable/observable";
 import * as settingsService from "../common/observables/settings";
 import * as activeTabService from "../common/observables/activeTab";
+import {
+  ICONS_PROXY_OFF_ICON_DARK,
+  ICONS_PROXY_OFF_ICON_LIGHT,
+  ICONS_PROXY_ON_ICON_DARK,
+  ICONS_PROXY_ON_ICON_LIGHT,
+} from "../common/assets";
 
 const ICONS: Dict<Theme, DictOpt<string, string>> = {
   LIGHT: {
-    true: "/assets/icons/proxy-on-icon.svg",
-    false: "/assets/icons/proxy-off-icon-light.svg",
+    true: ICONS_PROXY_ON_ICON_LIGHT,
+    false: ICONS_PROXY_OFF_ICON_LIGHT,
   },
   DARK: {
-    true: "/assets/icons/proxy-on-icon.svg",
-    false: "/assets/icons/proxy-off-icon-dark.svg",
+    true: ICONS_PROXY_ON_ICON_DARK,
+    false: ICONS_PROXY_OFF_ICON_DARK,
   },
 };
 
