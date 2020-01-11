@@ -4,56 +4,11 @@ import { getUrlDomain, isProxyEnabledForDomain } from "../common/helpers";
 import { Tab } from "../common/browser";
 import * as activeTabService from "../common/observables/activeTab";
 import * as settingsService from "../common/observables/settings";
-import { UseProxyMode } from "../common/observables/settings";
 import { combineLatest } from "light-observable/observable";
 import { UIMessage } from "../common/uiMessages";
 import s from "./main_popup.postcss";
-
-const OPTIONS: [string, { label: string }][] = [
-  ["DEFAULT", { label: "Default behaviour" }],
-  ["ALWAYS", { label: "Always proxy this site" }],
-  ["NEVER", { label: "Never proxy this site" }],
-];
-
-// Create your app
-function Warning(props: { onClick?: () => void; children: string }): VNode {
-  return <div onClick={props.onClick}>{props.children}</div>;
-}
-
-function OptionList(props: {
-  value: UseProxyMode | null;
-  onChange: (value: string) => void;
-  isDisabled: boolean;
-  isProxyUsedByDefault: boolean;
-}): VNode {
-  const { onChange, isProxyUsedByDefault, isDisabled } = props;
-  return (
-    <ul className={s.optionsList}>
-      {OPTIONS.map(([value, { label }]) => (
-        <li className={s.option}>
-          <input
-            className={cn("browser-style", s.domain_setting)}
-            name="domain_setting"
-            value={value}
-            type="radio"
-            disabled={isDisabled}
-            checked={props.value ? value === props.value : value === "DEFAULT"}
-            onClick={() => onChange(value)}
-          />
-          <label className="browser-style" for="domain_proxy_default">
-            {label}
-            {value === "DEFAULT" && (
-              <span id="default_behaviour">
-                {" "}
-                ({isProxyUsedByDefault ? "use proxy" : `don't use proxy`})
-              </span>
-            )}
-          </label>
-        </li>
-      ))}
-    </ul>
-  );
-}
+import OptionList from "./OptionList";
+import Warnings from "./Warnings";
 
 function App(props: {
   settings: settingsService.Settings;
@@ -95,18 +50,17 @@ function App(props: {
 
   return (
     <Fragment>
-      <section className={s.warnings}>
-        {isConfigNotSet && (
-          <Warning
-            onClick={() => {
+      <Warnings
+        warnings={[
+          isConfigNotSet && {
+            text: `You haven't configured extension yet, it will not work properly
+            until you do. Click to open settings page.`,
+            onClick: () => {
               browser.runtime.openOptionsPage();
-            }}
-          >
-            You haven't configured extension yet, it will not work properly
-            until you do. Click to open settings page.
-          </Warning>
-        )}
-      </section>
+            },
+          },
+        ]}
+      />
       <div className={cn(s.content, isEnabled && s.isEnabled)}>
         <section className={cn(s.section, s.top)}>
           <div className={s.currentDomain}>{domain || "(no domain)"}</div>
