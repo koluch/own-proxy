@@ -1,0 +1,59 @@
+.root {
+  display: grid;
+  flex: 1;
+  width: 100%;
+  grid-column: 2 / -1;
+  grid-template-columns: auto 130px 100px;
+}
+
+.row {
+  display: contents;
+
+  &:not(:first-child) {
+    > .item {
+      border-top: 1px solid #e7e7e7;
+    }
+  }
+}
+
+.item {
+  display: flex;
+  padding: 0.5rem 0.25rem;
+}
+
+.domain {
+  position: relative;
+
+  > div {
+    position: absolute;
+    top: 50%;
+    left: 0.25rem;
+    width: calc(100% - 0.25rem * 2);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transform: translateY(-50%);
+  }
+}
+.domainInput {
+  flex: 1;
+}
+
+.useProxy {
+}
+
+.delete {
+}
+
+.useProxySelect {
+  width: 100%;
+  margin: 0;
+  flex: 1;
+}
+
+.deleteButton {
+  width: 100%;
+  text-align: center;
+  margin: 0;
+  flex: 1;
+}

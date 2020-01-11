@@ -1,9 +1,11 @@
 import { h, JSX, render, VNode } from "preact";
+import cn from "classnames";
+import { useEffect, useState } from "preact/hooks";
 import * as settingsService from "../common/observables/settings";
 import { Settings } from "../common/observables/settings";
-import { useEffect, useState } from "preact/hooks";
 import { isEqual } from "../common/helpers";
 import DomainSettings from "./DomainSettings";
+import s from "./options.postcss";
 
 function App(props: {}): VNode | null {
   const [formState, setFormState] = useState<Settings>(
@@ -45,7 +47,7 @@ function App(props: {}): VNode | null {
 
   return (
     <div>
-      <section className="settings browser-style">
+      <section className={cn(s.settings, "browser-style")}>
         <label for="host" className="title">
           Host:
         </label>
@@ -79,9 +81,7 @@ function App(props: {}): VNode | null {
           }}
         />
 
-        <label for="user" className="title">
-          User:
-        </label>
+        <label for="user">User:</label>
         <input
           className="param"
           id="user"
@@ -96,9 +96,7 @@ function App(props: {}): VNode | null {
           }}
         />
 
-        <label for="password" className="title">
-          Password:
-        </label>
+        <label for="password">Password:</label>
         <input
           className="param"
           id="password"
@@ -141,7 +139,7 @@ function App(props: {}): VNode | null {
           }}
         />
         {Object.keys(formState.domainSettings).length > 0 && (
-          <div className="buttons">
+          <div className={s.buttons}>
             <button
               className="browser-style"
               type="button"
@@ -153,7 +151,7 @@ function App(props: {}): VNode | null {
           </div>
         )}
 
-        <div className="buttons">
+        <div className={s.buttons}>
           <button
             className="browser-style"
             type="button"

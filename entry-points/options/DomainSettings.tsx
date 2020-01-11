@@ -6,6 +6,7 @@ import {
   UseProxyModeValues,
 } from "../common/observables/settings";
 import { useState } from "preact/hooks";
+import s from "./DomainSettings.postcss";
 
 const DEFAULT_USE_MODE: UseProxyMode = "ALWAYS";
 
@@ -13,22 +14,14 @@ function TableRow(props: {
   children: VNode | VNode[];
   className?: string;
 }): VNode {
-  return (
-    <div className={cn("domainSettingsRow", props.className)}>
-      {props.children}
-    </div>
-  );
+  return <div className={cn(s.row, props.className)}>{props.children}</div>;
 }
 
 function TableItem(props: {
   children: VNode | VNode[];
   className?: string;
 }): VNode {
-  return (
-    <div className={cn("domainSettingsItem", props.className)}>
-      {props.children}
-    </div>
-  );
+  return <div className={cn(s.item, props.className)}>{props.children}</div>;
 }
 
 interface NewItem {
@@ -58,7 +51,7 @@ export default function DomainSettings(props: {
   }
 
   return (
-    <div className={cn("domainSettings")}>
+    <div className={s.root}>
       {Object.keys(domainSettingsDict).map(domain => {
         const domainSettings = domainSettingsDict[domain];
         if (domainSettings == null) {
@@ -92,16 +85,13 @@ export default function DomainSettings(props: {
 
         return (
           <TableRow key={domain}>
-            <TableItem className={cn("domainSettingsItemDomain")}>
+            <TableItem className={cn(s.domain)}>
               <div>{domain}</div>
             </TableItem>
-            <TableItem className={cn("domainSettingsItemUseProxy")}>
+            <TableItem className={cn(s.useProxy)}>
               <select
                 value={domainSettings.useProxy}
-                className={cn(
-                  "browser-style",
-                  "domainSettingsItemUseProxySelect",
-                )}
+                className={cn("browser-style", s.useProxySelect)}
                 onInput={handleUseProxyChange}
               >
                 {UseProxyModeValues.map(value => (
@@ -109,12 +99,9 @@ export default function DomainSettings(props: {
                 ))}
               </select>
             </TableItem>
-            <TableItem className={cn("domainSettingsItemDelete")}>
+            <TableItem className={cn(s.delete)}>
               <button
-                className={cn(
-                  "browser-style",
-                  "domainSettingsItemDeleteButton",
-                )}
+                className={cn("browser-style", s.deleteButton)}
                 onClick={handleDelete}
               >
                 Delete
@@ -124,9 +111,9 @@ export default function DomainSettings(props: {
         );
       })}
       <TableRow>
-        <TableItem className={cn("domainSettingsItemDomain")}>
+        <TableItem className={cn(s.domain)}>
           <input
-            className={cn("domainSettingsItemDomainInput")}
+            className={cn(s.domainInput)}
             value={newItem.domain}
             placeholder="Domain"
             onInput={e => {
@@ -137,10 +124,10 @@ export default function DomainSettings(props: {
             }}
           />
         </TableItem>
-        <TableItem className={cn("domainSettingsItem")}>
+        <TableItem>
           <select
             value={newItem.useProxy}
-            className={cn("browser-style", "domainSettingsItemUseProxySelect")}
+            className={cn("browser-style", s.useProxySelect)}
             onChange={e => {
               setNewItem({
                 ...newItem,
@@ -154,9 +141,9 @@ export default function DomainSettings(props: {
             ))}
           </select>
         </TableItem>
-        <TableItem className={cn("domainSettingsItem")}>
+        <TableItem>
           <button
-            className={cn("browser-style", "domainSettingsItemDeleteButton")}
+            className={cn("browser-style", s.deleteButton)}
             onClick={handleAdd}
             disabled={newItem.domain === ""}
           >

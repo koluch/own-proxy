@@ -6,6 +6,7 @@ import * as activeTabService from "../common/observables/activeTab";
 import * as settingsService from "../common/observables/settings";
 import { combineLatest } from "light-observable/observable";
 import { UIMessage } from "../common/uiMessages";
+import s from "./main_popup.postcss";
 
 const OPTIONS: [string, { label: string }][] = [
   ["DEFAULT", { label: "Default behaviour" }],
@@ -35,7 +36,7 @@ const App = (props: {
 
   return (
     <Fragment>
-      <section className="warnings">
+      <section className={s.warnings}>
         {isConfigNotSet && (
           <Warning
             onClick={() => {
@@ -47,12 +48,12 @@ const App = (props: {
           </Warning>
         )}
       </section>
-      <div className={cn("content", isEnabled && "isEnabled")}>
-        <section className={cn("section", "top")}>
-          <div className="currentDomain">{domain || "(no domain)"}</div>
+      <div className={cn(s.content, isEnabled && s.isEnabled)}>
+        <section className={cn(s.section, s.top)}>
+          <div className={s.currentDomain}>{domain || "(no domain)"}</div>
         </section>
-        <section className={cn("section", "top")}>
-          <div className="currentState">
+        <section className={cn(s.section, s.top)}>
+          <div className={s.currentState}>
             <UIMessage
               params={{ isEnabled: <b>{isEnabled ? "used" : "not used"}</b> }}
             >
@@ -60,12 +61,12 @@ const App = (props: {
             </UIMessage>
           </div>
         </section>
-        <section className={cn("section", "middle")}>
-          <ul className="optionsList">
+        <section className={cn(s.section, s.middle)}>
+          <ul className={s.optionsList}>
             {OPTIONS.map(([value, { label }]) => (
-              <li className="option">
+              <li className={s.option}>
                 <input
-                  className={cn("browser-style", "domain_setting")}
+                  className={cn("browser-style", s.domain_setting)}
                   name="domain_setting"
                   value={value}
                   type="radio"
@@ -111,8 +112,8 @@ const App = (props: {
             ))}
           </ul>
         </section>
-        <section className={cn("section", "footer")}>
-          <div className={"optionsPageLink"}>
+        <section className={cn(s.section, s.footer)}>
+          <div className={s.optionsPageLink}>
             <a
               href="#"
               onClick={() => {
