@@ -5,7 +5,7 @@
   "version": "debug",
 
   "icons": {
-    "48": "/assets/icons/proxy-off-icon-light.svg"
+    "48": "/assets/icons/logo.svg"
   },
 
   "browser_action": {
