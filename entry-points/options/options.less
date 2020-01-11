@@ -46,13 +46,9 @@ label {
 
   @border-color: #e7e7e7;
 
-  > .domainSettingsItem {
-    border-top: 1px solid @border-color;
-  }
-
-  &:last-child {
+  &:not(:first-child) {
     > .domainSettingsItem {
-      border-bottom: 1px solid @border-color;
+      border-top: 1px solid @border-color;
     }
   }
 }
