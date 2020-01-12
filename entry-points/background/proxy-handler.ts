@@ -1,5 +1,6 @@
 import * as settingsService from "../common/observables/settings";
 import { getUrlDomain, isProxyEnabledForDomain } from "../common/helpers";
+import * as errorLogService from "../common/observables/errorLog";
 
 let settings = settingsService.DEFAULT_SETTINGS;
 settingsService.DEFAULT.subscribe(next => {
@@ -31,8 +32,20 @@ browser.proxy.onRequest.addListener(
 );
 
 // Log any errors from the proxy script
+let counter = 0;
 // todo: fix
 // @ts-ignore
 browser.proxy.onError.addListener(error => {
-  console.error(`Proxy error: ${error.message}`);
+  console.warn(`Proxy error: ${error.message}`);
+  errorLogService.DEFAULT.write(log => ({
+    ...log,
+    messages: [
+      ...log.messages,
+      {
+        id: `${counter++}`,
+        time: new Date().getTime(),
+        text: error.message,
+      },
+    ],
+  }));
 });

@@ -1,4 +1,4 @@
-import { createStore, Store } from "../store";
+import { createStore, Store, Updater } from "../store";
 import { DictOpt } from "../helpers";
 import { WriteableObservable } from "./service";
 import StorageObject = browser.storage.StorageObject;
@@ -35,11 +35,8 @@ export const DEFAULT_SETTINGS: Settings = {
 
 export function create(store: Store<Settings>): WriteableObservable<Settings> {
   return {
-    write: (newSettings: Partial<Settings>): void => {
-      store.next({
-        ...store.getState(),
-        ...newSettings,
-      });
+    write: (updater: Updater<Settings>): void => {
+      store.setState(updater);
     },
     subscribe: (...args) => store.subscribe(...args),
   };
@@ -76,5 +73,6 @@ export const DEFAULT: WriteableObservable<Settings> = create(
           DEFAULT_SETTINGS.domainSettings) as DomainSettingsDict,
       };
     },
+    "SYNC",
   ),
 );

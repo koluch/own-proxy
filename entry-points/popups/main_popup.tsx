@@ -4,17 +4,21 @@ import { getUrlDomain, isProxyEnabledForDomain } from "../common/helpers";
 import { Tab } from "../common/browser";
 import * as activeTabService from "../common/observables/activeTab";
 import * as settingsService from "../common/observables/settings";
+import * as errorLogService from "../common/observables/errorLog";
 import { combineLatest } from "light-observable/observable";
 import { UIMessage } from "../common/uiMessages";
 import s from "./main_popup.postcss";
 import OptionList from "./OptionList";
 import Warnings from "./Warnings";
+import Errors from "./Errors";
+import { useState } from "preact/hooks";
 
 function App(props: {
   settings: settingsService.Settings;
   activeTab: Tab;
+  errorLog: errorLogService.Log;
 }): VNode {
-  const { settings, activeTab } = props;
+  const { settings, activeTab, errorLog } = props;
 
   const isConfigNotSet = settings.host === "";
 
@@ -24,6 +28,8 @@ function App(props: {
 
   const isEnabledByDefault = settings.onByDefault;
   const [isEnabled, reason] = isProxyEnabledForDomain(settings, domain);
+
+  const [showErrorsLog, setShowErrorsLog] = useState(false);
 
   const handleChangeUseProxy = (value: string): void => {
     if (domain != null) {
@@ -83,18 +89,46 @@ function App(props: {
           />
         </section>
         <section className={cn(s.section, s.footer)}>
-          <div className={s.optionsPageLink}>
-            <a
-              href="#"
+          <div>
+            {(errorLog.messages.length > 0 || showErrorsLog) && (
+              <Fragment>
+                <div
+                  className={s.showErrorsLink}
+                  onClick={() => {
+                    setShowErrorsLog(!showErrorsLog);
+                  }}
+                >
+                  {showErrorsLog ? "Hide" : "Show"} errors (
+                  {errorLog.messages.length})
+                </div>
+                <div
+                  className={s.clearErrorsLink}
+                  onClick={() => {
+                    errorLogService.DEFAULT.write(log => ({
+                      ...log,
+                      messages: [],
+                    }));
+                    setShowErrorsLog(false);
+                  }}
+                >
+                  Clear errors
+                </div>
+              </Fragment>
+            )}
+          </div>
+          <div>
+            <div
+              className={s.optionsPageLink}
               onClick={() => {
                 browser.runtime.openOptionsPage();
               }}
             >
               Settings
-            </a>
+            </div>
           </div>
         </section>
       </div>
+      {showErrorsLog && <Errors errors={errorLog.messages} />}
     </Fragment>
   );
 }
@@ -105,8 +139,13 @@ if (_rootEl == null) {
 }
 const rootEl = _rootEl;
 
-combineLatest(activeTabService.DEFAULT, settingsService.DEFAULT).subscribe(
-  ([activeTab, settings]) => {
-    render(<App settings={settings} activeTab={activeTab} />, rootEl);
-  },
-);
+combineLatest(
+  activeTabService.DEFAULT,
+  settingsService.DEFAULT,
+  errorLogService.DEFAULT,
+).subscribe(([activeTab, settings, errorLog]) => {
+  render(
+    <App settings={settings} activeTab={activeTab} errorLog={errorLog} />,
+    rootEl,
+  );
+});

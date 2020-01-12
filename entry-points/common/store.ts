@@ -1,13 +1,11 @@
 import StorageValue = browser.storage.StorageValue;
-import {
-  PartialObserver,
-  Subscribable,
-  Subscription,
-  SubscriptionObserver,
-} from "light-observable";
+import { Subscribable, Subscription } from "light-observable";
 import { createSubject } from "light-observable/observable";
 
-export interface Store<T> extends SubscriptionObserver<T>, Subscribable<T> {
+export type Updater<T> = Partial<T> | ((oldState: T) => T);
+
+export interface Store<T> extends Subscribable<T> {
+  setState: (updater: Updater<T>) => void;
   getState: () => T;
 }
 
@@ -16,17 +14,21 @@ export function createStore<T>(
   initial: T,
   serialize: (value: T) => StorageValue,
   deserialize: (object: StorageValue) => T,
+  type: "SYNC" | "LOCAL",
 ): Store<T> {
   const [stream, sink] = createSubject<T>({ initial });
 
-  browser.storage.sync.get([storageKey]).then(data => {
+  const storage =
+    type === "SYNC" ? browser.storage.sync : browser.storage.local;
+
+  storage.get([storageKey]).then(data => {
     const item: StorageValue = data[storageKey];
     const deserialize1 = deserialize(item);
     sink.next(item != null ? deserialize1 : initial);
   });
 
   browser.runtime.onInstalled.addListener(details => {
-    browser.storage.sync.set({
+    storage.set({
       [storageKey]: serialize(initial),
     });
   });
@@ -43,16 +45,15 @@ export function createStore<T>(
   });
 
   return {
-    subscribe(
-      next?: PartialObserver<T> | (<T>(value: T) => void),
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      error?: (reason: any) => void,
-      complete?: () => void,
-    ): Subscription {
-      return stream.subscribe(next, error, complete);
+    subscribe(...args): Subscription {
+      return stream.subscribe(...args);
     },
-    next: (newState: T) => {
-      browser.storage.sync
+    setState: (updater: Partial<T> | ((oldState: T) => T)) => {
+      const newState =
+        updater instanceof Function
+          ? updater(currentValue)
+          : { ...currentValue, ...updater };
+      storage
         .set({
           [storageKey]: serialize(newState),
         })
@@ -63,8 +64,6 @@ export function createStore<T>(
           sink.error(e.message);
         });
     },
-    error: reason => sink.error(reason),
-    complete: () => sink.complete(),
     getState: () => currentValue,
   };
 }
