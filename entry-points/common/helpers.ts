@@ -1,5 +1,6 @@
 import * as settingsService from "./observables/settings";
 import { m, Message, p } from "./uiMessages";
+import StringDelta = browser.downloads.StringDelta;
 
 export type Dict<K extends string, T> = { [P in K]: T };
 export type DictOpt<K extends string, T> = { [P in K]?: T };
@@ -112,4 +113,63 @@ export function isEqual<T>(value: any, other: any): boolean {
 
   // If nothing failed, return true
   return true;
+}
+
+export async function downloadFile(
+  data: string,
+  fileName: string,
+): Promise<void> {
+  const blob = new Blob([data], {
+    type: "application/json",
+  });
+  const url = URL.createObjectURL(blob);
+  try {
+    const id = await browser.downloads.download({
+      url: url,
+      filename: fileName,
+      saveAs: true,
+    });
+    await new Promise(resolve => {
+      const listener = (delta: {
+        id: number;
+        url?: StringDelta;
+        state?: StringDelta;
+        filename?: StringDelta;
+      }): void => {
+        if (
+          delta.id === id &&
+          delta.state &&
+          delta.state.previous === "in_progress" &&
+          delta.state.current === "complete"
+        ) {
+          URL.revokeObjectURL(url);
+          browser.downloads.onChanged.removeListener(listener);
+          resolve();
+        }
+      };
+      browser.downloads.onChanged.addListener(listener);
+    });
+  } catch (e) {
+    console.log(`Error while downloading export file: ${e.message}`);
+    URL.revokeObjectURL(url);
+  }
+}
+
+export async function uploadFile(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const fileReader = new FileReader();
+    fileReader.onload = () => {
+      try {
+        if (typeof fileReader.result === "string") {
+          resolve(fileReader.result);
+        }
+      } catch (err) {
+        reject(err);
+      }
+    };
+    fileReader.onerror = e => {
+      reject(e);
+    };
+    fileReader.readAsText(file);
+  });
 }

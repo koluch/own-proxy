@@ -1,13 +1,17 @@
 import { h, JSX, render, VNode } from "preact";
 import cn from "classnames";
-import { useEffect, useState } from "preact/hooks";
+import { useEffect, useRef, useState } from "preact/hooks";
 import * as settingsService from "../common/observables/settings";
 import { Settings } from "../common/observables/settings";
-import { isEqual } from "../common/helpers";
+import { downloadFile, isEqual, uploadFile } from "../common/helpers";
 import DomainSettings from "./DomainSettings";
 import s from "./options.postcss";
 
+const EXPORT_FILENAME = "own-proxy-settings.json";
+
 function App(props: {}): VNode | null {
+  const importFileInput = useRef<HTMLInputElement | null>(null);
+
   const [formState, setFormState] = useState<Settings>(
     settingsService.DEFAULT_SETTINGS,
   );
@@ -42,6 +46,24 @@ function App(props: {}): VNode | null {
   function handleCancel(): void {
     setFormState(currentSettings);
   }
+
+  const handleExport = async (): Promise<void> => {
+    await downloadFile(JSON.stringify(formState, null, 2), EXPORT_FILENAME);
+  };
+
+  const handleImport = async (
+    e: JSX.TargetedEvent<HTMLInputElement>,
+  ): Promise<void> => {
+    const files = e.currentTarget.files;
+    if (files && files.length > 0) {
+      const file = files.item(0);
+      if (file != null && file.type === "application/json") {
+        const fileText = await uploadFile(file);
+        const fileJSON = JSON.parse(fileText);
+        setFormState(fileJSON as Settings); // todo: validate
+      }
+    }
+  };
 
   const isFormChanged = !isEqual(formState, currentSettings);
 
@@ -170,6 +192,31 @@ function App(props: {}): VNode | null {
           >
             Save
           </button>
+          <button
+            className="browser-style"
+            type="button"
+            onClick={handleExport}
+          >
+            Export
+          </button>
+          <button
+            className="browser-style"
+            type="button"
+            onClick={() => {
+              if (importFileInput.current) {
+                importFileInput.current.click();
+              }
+            }}
+          >
+            Import
+          </button>
+          <input
+            ref={importFileInput}
+            style={{ display: "none" }}
+            className="browser-style"
+            type="file"
+            onChange={handleImport}
+          />
         </div>
       </section>
     </div>

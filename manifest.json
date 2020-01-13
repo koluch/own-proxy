@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Own-proxy",
-  "description": "Simple extension to support proxy connecting vie authorized SOCKS5",
+  "description": "Simple extension to support proxy connection via authorized SOCKS5",
   "version": "debug",
 
   "icons": {
@@ -23,7 +23,7 @@
     "browser_style": true
   },
 
-  "permissions": ["proxy", "storage", "tabs", "<all_urls>"],
+  "permissions": ["proxy", "storage", "tabs", "downloads", "<all_urls>"],
 
   "browser_specific_settings": {
     "gecko": {
