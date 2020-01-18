@@ -1,6 +1,6 @@
 # [Own-proxy](https://addons.mozilla.org/en-US/firefox/addon/own-proxy/)
 
-Simple extension to support proxy connecting vie authorized SOCKS5
+Simple Firefox extension to support proxy connecting vie authorized SOCKS5
 
 ## Build
 
