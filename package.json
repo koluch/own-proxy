@@ -1,6 +1,6 @@
 {
   "name": "own-proxy",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Simple extension to support proxy connecting vie authorizes SOCKS5",
   "main": "index.js",
   "appId": "{391fab89-c8ee-4042-bc54-4b2bcf477fac}",
