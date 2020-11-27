@@ -73,6 +73,6 @@ export const DEFAULT: WriteableObservable<Settings> = create(
           DEFAULT_SETTINGS.domainSettings) as DomainSettingsDict,
       };
     },
-    "LOCAL",
+    "SYNC",
   ),
 );

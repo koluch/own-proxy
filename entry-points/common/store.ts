@@ -23,15 +23,14 @@ export function createStore<T>(
 
   storage.get([storageKey]).then(data => {
     const item: StorageValue = data[storageKey];
-    const deserialize1 = deserialize(item);
-    sink.next(item != null ? deserialize1 : initial);
+    sink.next(item != null ? deserialize(item) : initial);
   });
 
-  browser.runtime.onInstalled.addListener(details => {
-    storage.set({
-      [storageKey]: serialize(initial),
-    });
-  });
+  // browser.runtime.onInstalled.addListener(details => {
+  //   storage.set({
+  //     [storageKey]: serialize(initial),
+  //   });
+  // });
 
   browser.storage.onChanged.addListener(changeData => {
     if (storageKey in changeData) {
